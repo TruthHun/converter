@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <title>python文档 - 掘金量化(www.myquant.cn)</title>
+    <link href="../css/editormd.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/myquant.css"/>
+</head>
+<body>
+<div class="m-manual manual-reader">
+    <div class="container-fluid manual-body">
+
+        <div class="manual-article">
+            <div class="article-content">
+                <h1 id="article-title">数据结构 - 数据类</h1>
+                <div class="article-body  markdown-body editormd-preview-container" id="page-content">
+                    <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-2" href="#Tick - Tick对象" level="2">Tick - Tick对象</a><ul><li><a class="toc-level-4" href="#Quote - 报价" level="4">Quote - 报价</a></li></ul></li><li><a class="toc-level-2" href="#Bar - Bar对象" level="2">Bar - Bar对象</a><ul></ul></li></ul></div><h2 id="h2-tick-tick-"><a name="Tick - Tick对象" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Tick - Tick对象</h2><p>逐笔行情数据</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">symbol</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left"><a href="/docs/python/python_concept/#symbol">标的代码</a></td>
+</tr>
+<tr>
+<td style="text-align:left">open</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">开盘价</td>
+</tr>
+<tr>
+<td style="text-align:left">high</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">最高价</td>
+</tr>
+<tr>
+<td style="text-align:left">low</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">最低价</td>
+</tr>
+<tr>
+<td style="text-align:left">price</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">最新价</td>
+</tr>
+<tr>
+<td style="text-align:left">cum_volume</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">成交总量/最新成交量,累计值</td>
+</tr>
+<tr>
+<td style="text-align:left">cum_amount</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">成交总金额/最新成交额,累计值</td>
+</tr>
+<tr>
+<td style="text-align:left">trade_type</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">交易类型  1: ‘双开’, 2: ‘双平’, 3: ‘多开’, 4: ‘空开’, 5: ‘空平’, 6: ‘多平’, 7: ‘多换’, 8: ‘空换’</td>
+</tr>
+<tr>
+<td style="text-align:left">last_volume</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">瞬时成交额</td>
+</tr>
+<tr>
+<td style="text-align:left">cum_position</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">合约持仓量(期),累计值</td>
+</tr>
+<tr>
+<td style="text-align:left">last_amount</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">瞬时成交额</td>
+</tr>
+<tr>
+<td style="text-align:left">created_at</td>
+<td style="text-align:left">datetime.datetime</td>
+<td style="text-align:left">创建时间</td>
+</tr>
+<tr>
+<td style="text-align:left">quotes</td>
+<td style="text-align:left">list[quote]</td>
+<td style="text-align:left">买卖1-5档 (如下)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-quote-"><a name="Quote - 报价" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Quote - 报价</h4><table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">bid_p</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">买一价</td>
+</tr>
+<tr>
+<td style="text-align:left">bid_v</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">买一量</td>
+</tr>
+<tr>
+<td style="text-align:left">ask_p</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">卖一价</td>
+</tr>
+<tr>
+<td style="text-align:left">ask_v</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">卖一量</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h2-bar-bar-"><a name="Bar - Bar对象" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Bar - Bar对象</h2><p>bar数据是指各种频率的行情数据</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">symbol</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left"><a href="/docs/python/python_concept/#symbol">标的代码</a></td>
+</tr>
+<tr>
+<td style="text-align:left">frequency</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">频率, 支持多种频率, 具体见<a href="/docs/data/data_stock_now">股票行情数据</a>和<a href="/docs/data/data_futures_now">期货行情数据</a></td>
+</tr>
+<tr>
+<td style="text-align:left">open</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">开盘价</td>
+</tr>
+<tr>
+<td style="text-align:left">close</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">收盘价</td>
+</tr>
+<tr>
+<td style="text-align:left">high</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">最高价</td>
+</tr>
+<tr>
+<td style="text-align:left">low</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">最低价</td>
+</tr>
+<tr>
+<td style="text-align:left">amount</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">成交额</td>
+</tr>
+<tr>
+<td style="text-align:left">volume</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">成交量</td>
+</tr>
+<tr>
+<td style="text-align:left">position</td>
+<td style="text-align:left">long</td>
+<td style="text-align:left">持仓量</td>
+</tr>
+<tr>
+<td style="text-align:left">pre_close</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">前收盘价</td>
+</tr>
+<tr>
+<td style="text-align:left">bob</td>
+<td style="text-align:left">datetime.datetime</td>
+<td style="text-align:left">bar开始时间</td>
+</tr>
+<tr>
+<td style="text-align:left">eob</td>
+<td style="text-align:left">datetime.datetime</td>
+<td style="text-align:left">bar结束时间</td>
+</tr>
+</tbody>
+</table>
+
+                </div>
+            </div>
+
+    </div>
+</div>
+
+</div></body></html>

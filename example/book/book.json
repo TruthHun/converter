@@ -1,7 +1,3 @@
-通过calibre将html转成epub、mobi、pdf等文档
-
-## json配置文件说明
-```json
 {
   "title":"python文档",
   "contributor":"掘金量化",
@@ -80,4 +76,3 @@
     }
   ]
 }
-```
