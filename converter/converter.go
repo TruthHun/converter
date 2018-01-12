@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"time"
+
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/filetil"
 )
@@ -54,25 +56,32 @@ func NewConverter(configFile string) (converter *Converter, err error) {
 	)
 	if cfg, err = parseConfig(configFile); err == nil {
 		if basepath, err = filepath.Abs(filepath.Dir(configFile)); err == nil {
+			//设置默认值
+			if len(cfg.Timestamp) == 0 {
+				cfg.Timestamp = time.Now().Format("2006-01-02 15:04:05")
+			}
 			converter = &Converter{
 				Config:   cfg,
 				BasePath: basepath,
 			}
 		}
-
 	}
 	return
 }
 
+//执行文档转换
 func (this *Converter) Convert() (err error) {
-	//最后移除创建的多余而文件
-	defer this.converterDefer()
+	//defer this.converterDefer() //最后移除创建的多余而文件
+
+	this.generateMimeType()
+	this.generateMetaInfo()
+	this.generateTocNcx()     //生成目录
+	this.generateTitlePage()  //生成封面
+	this.generateContentOpf() //这个必须是generate*系列方法的最后一个调用
 
 	//创建导出文件夹
-	if err = os.Mkdir(output, os.ModePerm); err != nil {
-		return err
+	if err = os.Mkdir(output, os.ModePerm); err == nil {
 	}
-
 	return
 }
 
@@ -125,7 +134,7 @@ func (this *Converter) generateTitlePage() (err error) {
 					<body>
 						<div>
 							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="100%" height="100%" viewBox="0 0 800 1068" preserveAspectRatio="none">
-								<image width="800" height="1068" xlink:href="` + strings.Trim(this.Config.Cover, "./") + `"/>
+								<image width="800" height="1068" xlink:href="` + strings.TrimPrefix(this.Config.Cover, "./") + `"/>
 							</svg>
 						</div>
 					</body>
@@ -139,9 +148,9 @@ func (this *Converter) generateTitlePage() (err error) {
 }
 
 //生成文档目录
-func tocNcx(title string, toc []Toc, basepath string) {
+func (this *Converter) generateTocNcx() (err error) {
 	ncx := `<?xml version='1.0' encoding='utf-8'?>
-			<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="zh-CN">
+			<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="%v">
 			  <head>
 				<meta content="4" name="dtb:depth"/>
 				<meta content="calibre (2.85.1)" name="dtb:generator"/>
@@ -153,16 +162,16 @@ func tocNcx(title string, toc []Toc, basepath string) {
 			  </docTitle>
 			  <navMap>%v</navMap>
 			</ncx>
-			`
-	codes, _ := tocToXml(toc, 0, 1)
-	ncx = fmt.Sprintf(ncx, title, strings.Join(codes, ""))
-	if err := ioutil.WriteFile(basepath+"/toc.ncx", []byte(ncx), os.ModePerm); err != nil {
-		panic(err)
-	}
+	`
+	codes, _ := tocToXml(this.Config.Toc, 0, 1)
+	ncx = fmt.Sprintf(ncx, this.Config.Language, this.Config.Title, strings.Join(codes, ""))
+	return ioutil.WriteFile(this.BasePath+"/toc.ncx", []byte(ncx), os.ModePerm)
 }
 
-//倒数第二步生成opf
-func ContentOpf(book Config, basePath string) {
+//生成content.opf文件
+//倒数第二步调用
+//TODO 这里需要优化和测试
+func (this *Converter) generateContentOpf() (err error) {
 	guide := ``
 	manifest := ``
 	meta := `
@@ -174,40 +183,42 @@ func ContentOpf(book Config, basePath string) {
 		<dc:creator opf:file-as="Unknown" opf:role="aut">%v</dc:creator>
 		<meta name="calibre:timestamp" content="%v"/>
 	`
-	meta = fmt.Sprintf(meta, book.Title, book.Contributor, book.Publisher, book.Description, book.Language, book.Creator, book.Timestamp)
-	if len(book.Cover) > 0 {
+	meta = fmt.Sprintf(meta, this.Config.Title, this.Config.Contributor, this.Config.Publisher, this.Config.Description, this.Config.Language, this.Config.Creator, this.Config.Timestamp)
+	if len(this.Config.Cover) > 0 {
 		meta = meta + `<meta name="cover" content="cover"/>`
 		guide = `<reference href="titlepage.xhtml" title="Cover" type="cover"/>`
-		manifest = fmt.Sprintf(`<item href="%v" id="cover" media-type="%v"/>`, strings.Trim(book.Cover, "./"), GetMediaType(filepath.Ext(book.Cover)))
+		manifest = fmt.Sprintf(`<item href="%v" id="cover" media-type="%v"/>`, this.Config.Cover, GetMediaType(filepath.Ext(this.Config.Cover)))
 	}
 
 	spine := ``
 	//扫描所有文件
-	if files, err := filetil.ScanFiles(basePath); err == nil {
-
+	if files, err := filetil.ScanFiles(this.BasePath); err == nil {
 		manifestArr := []string{}
 		spineArr := []string{}
+		basePath := strings.Replace(this.BasePath, "\\", "/", -1)
 		for _, file := range files {
 			if !file.IsDir && file.Name != "book.json" {
 				id := cryptil.Md5Crypt(file.Path)
 				ext := strings.ToLower(filepath.Ext(file.Path))
-				basePath = strings.Replace(basePath, "\\", "/", -1)
 				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
-				if sourcefile != strings.TrimLeft(book.Cover, "./") {
+				mt := GetMediaType(ext)
+				if sourcefile != strings.TrimLeft(this.Config.Cover, "./") && mt != "" { //不是封面图片，且media-type不为空
 					manifestArr = append(manifestArr,
-						fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, GetMediaType(ext)),
+						fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, mt),
 					)
 					if ext == ".html" || ext == ".xhtml" {
 						spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, id))
 					}
+					if ext == ".ncx" {
+						spineArr = append(spineArr, `<itemref idref="ncx"/>`)
+					}
 				}
-
 			}
 		}
-		manifest = manifest + strings.Join(manifestArr, "")
-		spine = strings.Join(spineArr, "")
+		manifest = manifest + strings.Join(manifestArr, "\n")
+		spine = strings.Join(spineArr, "\n")
 	} else {
-		panic(err)
+		return err
 	}
 
 	pkg := `<?xml version='1.0' encoding='utf-8'?>
@@ -228,9 +239,7 @@ func ContentOpf(book Config, basePath string) {
 		guide = `<guide>` + guide + `</guide>`
 	}
 	pkg = fmt.Sprintf(pkg, meta, manifest, spine, guide)
-	if err := ioutil.WriteFile(basePath+"/content.opf", []byte(pkg), os.ModePerm); err != nil {
-		panic(err)
-	}
+	return ioutil.WriteFile(this.BasePath+"/content.opf", []byte(pkg), os.ModePerm)
 }
 
 //最后一步
