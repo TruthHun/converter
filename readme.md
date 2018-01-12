@@ -81,3 +81,5 @@
   ]
 }
 ```
+1.  如果封面cover配置项为图片，则程序自动生成titlepage.xhtml文件；如果封面cover为html或者xhtml，则不会生成titlepage.xhtml.在处理的时候，判断cover前后是否相同再决定文件的删减
+1.  文件名，统一用book.pdf、book.epub等标识

@@ -12,8 +12,9 @@ import (
 )
 
 type Converter struct {
-	BasePath string
-	Config   Config
+	BasePath       string
+	Config         Config
+	GeneratedCover string
 }
 
 //目录结构
@@ -41,8 +42,9 @@ type Config struct {
 	Toc         []Toc    `json:"toc"`
 }
 
-//文档导出文件夹
-var output = "output"
+var (
+	output = "output" //文档导出文件夹
+)
 
 //根据json配置文件，创建文档转化对象
 func NewConverter(configFile string) (converter *Converter, err error) {
@@ -74,6 +76,7 @@ func (this *Converter) Convert() (err error) {
 	return
 }
 
+//删除生成导出文档而创建的文件
 func (this *Converter) converterDefer() {
 	//删除不必要的文件
 	go os.RemoveAll(this.BasePath + "/META-INF")
@@ -84,30 +87,32 @@ func (this *Converter) converterDefer() {
 	go os.RemoveAll(this.BasePath + "/titlepage.xhtml")
 }
 
-//生成meta信息
-func metaInfo(basepath string) {
+//生成metainfo
+func (this *Converter) generateMetaInfo() (err error) {
 	xml := `<?xml version="1.0"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-   <rootfiles>
-      <rootfile full-path="content.opf" media-type="application/oebps-package+xml"/>
-   </rootfiles>
-</container>
+			<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+			   <rootfiles>
+				  <rootfile full-path="content.opf" media-type="application/oebps-package+xml"/>
+			   </rootfiles>
+			</container>
     `
-	folder := basepath + "/META-INF"
-	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
-		panic(err)
+	folder := this.BasePath + "/META-INF"
+	if err = os.MkdirAll(folder, os.ModePerm); err == nil {
+		err = ioutil.WriteFile(folder+"/container.xml", []byte(xml), os.ModePerm)
 	}
-	if err := ioutil.WriteFile(folder+"/container.xml", []byte(xml), os.ModePerm); err != nil {
-		panic(err)
-	}
+	return
 }
 
-//生成封面图片
-func titlePage(basepath, cover string) {
-	//如果存在封面，则生成封面文件
-	if cover = strings.TrimSpace(cover); len(cover) > 0 {
+//形成mimetyppe
+func (this *Converter) generateMimeType() (err error) {
+	return ioutil.WriteFile(this.BasePath+"/mimetype", []byte("application/epub+zip"), os.ModePerm)
+}
+
+//生成封面
+func (this *Converter) generateTitlePage() (err error) {
+	if ext := strings.ToLower(filepath.Ext(this.Config.Cover)); !(ext == ".html" || ext == ".xhtml") {
 		xml := `<?xml version='1.0' encoding='utf-8'?>
-				<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">
+				<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="` + this.Config.Language + `">
 					<head>
 						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 						<meta name="calibre:cover" content="true"/>
@@ -120,16 +125,17 @@ func titlePage(basepath, cover string) {
 					<body>
 						<div>
 							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="100%" height="100%" viewBox="0 0 800 1068" preserveAspectRatio="none">
-								<image width="800" height="1068" xlink:href="` + strings.Trim(cover, "./") + `"/>
+								<image width="800" height="1068" xlink:href="` + strings.Trim(this.Config.Cover, "./") + `"/>
 							</svg>
 						</div>
 					</body>
 				</html>
-				`
-		if err := ioutil.WriteFile(basepath+"/titlepage.xhtml", []byte(xml), os.ModePerm); err != nil {
-			panic(err)
+		`
+		if err = ioutil.WriteFile(this.BasePath+"/titlepage.xhtml", []byte(xml), os.ModePerm); err == nil {
+			this.GeneratedCover = "titlepage.xhtml"
 		}
 	}
+	return
 }
 
 //生成文档目录
@@ -155,40 +161,8 @@ func tocNcx(title string, toc []Toc, basepath string) {
 	}
 }
 
-//将toc转成toc.ncx文件
-func tocToXml(tocs []Toc, pid, idx int) (codes []string, next_idx int) {
-	var code string
-	for _, toc := range tocs {
-		if toc.Pid == pid {
-			code, idx = getNavPoint(toc, idx)
-			codes = append(codes, code)
-			for _, item := range tocs {
-				if item.Pid == toc.Id {
-					code, idx = getNavPoint(item, idx)
-					codes = append(codes, code)
-					var code_arr []string
-					code_arr, idx = tocToXml(tocs, item.Id, idx)
-					codes = append(codes, code_arr...)
-					codes = append(codes, `</navPoint>`)
-				}
-			}
-			codes = append(codes, `</navPoint>`)
-		}
-	}
-	next_idx = idx
-	return
-}
-
-//形成mimetyppe
-func mimetype(basepath string) {
-	file := basepath + "/mimetype"
-	if err := ioutil.WriteFile(file, []byte(`application/epub+zip`), os.ModePerm); err != nil {
-		panic(err)
-	}
-}
-
 //倒数第二步生成opf
-func ContentOpf(book Book, basePath string) {
+func ContentOpf(book Config, basePath string) {
 	guide := ``
 	manifest := ``
 	meta := `
@@ -262,22 +236,4 @@ func ContentOpf(book Book, basePath string) {
 //最后一步
 func ConvertToPdf() {
 
-}
-
-//<navPoint id="uypBSBpbQHAkc2dM2WoMbaA" playOrder="11">
-//<navLabel>
-//<text>2.3 Controller运行机制</text>
-//</navLabel>
-//<content src="html/11.html"/>
-//</navPoint>
-func getNavPoint(toc Toc, idx int) (navpoint string, nextidx int) {
-	navpoint = `
-	<navPoint id="id%v" playOrder="%v">
-		<navLabel>
-			<text>%v</text>
-		</navLabel>
-		<content src="%v"/>`
-	navpoint = fmt.Sprintf(navpoint, toc.Id, idx, toc.Title, toc.Link)
-	nextidx = idx + 1
-	return
 }
