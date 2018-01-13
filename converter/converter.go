@@ -9,8 +9,11 @@ import (
 
 	"time"
 
+	"os/exec"
+
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/filetil"
+	"github.com/TruthHun/gotil/ziptil"
 )
 
 type Converter struct {
@@ -41,11 +44,15 @@ type Config struct {
 	Publisher   string   `json:"publisher"`
 	Title       string   `json:"title"`
 	Format      []string `json:"format"`
+	FontSize    string   `json:"font_size"`    //默认的pdf导出字体大小
+	PaperSize   string   `json:"paper_size"`   //页面大小
+	MoreOptions []string `json:"more_options"` //更多导出选项
 	Toc         []Toc    `json:"toc"`
 }
 
 var (
-	output = "output" //文档导出文件夹
+	output       = "output" //文档导出文件夹
+	ebookConvert = "ebook-convert"
 )
 
 //根据json配置文件，创建文档转化对象
@@ -71,7 +78,7 @@ func NewConverter(configFile string) (converter *Converter, err error) {
 
 //执行文档转换
 func (this *Converter) Convert() (err error) {
-	//defer this.converterDefer() //最后移除创建的多余而文件
+	defer this.converterDefer() //最后移除创建的多余而文件
 
 	this.generateMimeType()
 	this.generateMetaInfo()
@@ -79,8 +86,27 @@ func (this *Converter) Convert() (err error) {
 	this.generateTitlePage()  //生成封面
 	this.generateContentOpf() //这个必须是generate*系列方法的最后一个调用
 
-	//创建导出文件夹
-	if err = os.Mkdir(output, os.ModePerm); err == nil {
+	//将当前文件夹下的所有文件压缩成zip包，然后直接改名成content.epub
+	f := this.BasePath + "/content.epub"
+	os.Remove(f) //如果原文件存在了，则删除;
+	if err = ziptil.Zip(f, this.BasePath); err == nil {
+		//创建导出文件夹
+		os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
+		if len(this.Config.Format) > 0 {
+			for _, v := range this.Config.Format {
+				fmt.Println("convert to " + v)
+				switch strings.ToLower(v) {
+				case "epub":
+					err = this.convertToEpub()
+				case "mobi":
+					err = this.convertToMobi()
+				case "pdf":
+					err = this.convertToPdf()
+				}
+			}
+		} else {
+			err = this.convertToPdf()
+		}
 	}
 	return
 }
@@ -88,12 +114,12 @@ func (this *Converter) Convert() (err error) {
 //删除生成导出文档而创建的文件
 func (this *Converter) converterDefer() {
 	//删除不必要的文件
-	go os.RemoveAll(this.BasePath + "/META-INF")
-	go os.RemoveAll(this.BasePath + "/mimetype")
-	go os.RemoveAll(this.BasePath + "/toc.ncx")
-	go os.RemoveAll(this.BasePath + "/content.opf")
-	//封面图片待优化
-	go os.RemoveAll(this.BasePath + "/titlepage.xhtml")
+	os.RemoveAll(this.BasePath + "/META-INF")
+	os.RemoveAll(this.BasePath + "/content.epub")
+	os.RemoveAll(this.BasePath + "/mimetype")
+	os.RemoveAll(this.BasePath + "/toc.ncx")
+	os.RemoveAll(this.BasePath + "/content.opf")
+	os.RemoveAll(this.BasePath + "/titlepage.xhtml") //封面图片待优化
 }
 
 //生成metainfo
@@ -106,9 +132,8 @@ func (this *Converter) generateMetaInfo() (err error) {
 			</container>
     `
 	folder := this.BasePath + "/META-INF"
-	if err = os.MkdirAll(folder, os.ModePerm); err == nil {
-		err = ioutil.WriteFile(folder+"/container.xml", []byte(xml), os.ModePerm)
-	}
+	os.MkdirAll(folder, os.ModePerm)
+	err = ioutil.WriteFile(folder+"/container.xml", []byte(xml), os.ModePerm)
 	return
 }
 
@@ -170,21 +195,22 @@ func (this *Converter) generateTocNcx() (err error) {
 
 //生成content.opf文件
 //倒数第二步调用
-//TODO 这里需要优化和测试
 func (this *Converter) generateContentOpf() (err error) {
-	guide := ``
-	manifest := ``
-	//注意：如果存在封面，则需要把封面放在第一个位置
-	spine := ``
-	spineArr := []string{}
-	meta := `
-		<dc:title>%v</dc:title>
-		<dc:contributor opf:role="bkp">%v</dc:contributor>
-		<dc:publisher>%v</dc:publisher>
-		<dc:description>%v</dc:description>
-		<dc:language>%v</dc:language>
-		<dc:creator opf:file-as="Unknown" opf:role="aut">%v</dc:creator>
-		<meta name="calibre:timestamp" content="%v"/>
+	var (
+		guide       string
+		manifest    string
+		manifestArr []string
+		spine       string //注意：如果存在封面，则需要把封面放在第一个位置
+		spineArr    []string
+	)
+
+	meta := `<dc:title>%v</dc:title>
+			<dc:contributor opf:role="bkp">%v</dc:contributor>
+			<dc:publisher>%v</dc:publisher>
+			<dc:description>%v</dc:description>
+			<dc:language>%v</dc:language>
+			<dc:creator opf:file-as="Unknown" opf:role="aut">%v</dc:creator>
+			<meta name="calibre:timestamp" content="%v"/>
 	`
 	meta = fmt.Sprintf(meta, this.Config.Title, this.Config.Contributor, this.Config.Publisher, this.Config.Description, this.Config.Language, this.Config.Creator, this.Config.Timestamp)
 	if len(this.Config.Cover) > 0 {
@@ -196,22 +222,25 @@ func (this *Converter) generateContentOpf() (err error) {
 
 	//扫描所有文件
 	if files, err := filetil.ScanFiles(this.BasePath); err == nil {
-		manifestArr := []string{}
-
 		basePath := strings.Replace(this.BasePath, "\\", "/", -1)
 		for _, file := range files {
-			if !file.IsDir && file.Name != "book.json" {
-				id := cryptil.Md5Crypt(file.Path)
+			if !file.IsDir {
 				ext := strings.ToLower(filepath.Ext(file.Path))
+				id := "ncx"
+				if ext != ".ncx" {
+					if file.Name == "titlepage.xhtml" {
+						id = "titlepage"
+					} else {
+						id = cryptil.Md5Crypt(file.Path)
+					}
+
+				}
 				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
 				if mt := GetMediaType(ext); mt != "" { //不是封面图片，且media-type不为空
-					if ext == ".html" || ext == ".xhtml" {
+					if (ext == ".html" || ext == ".xhtml") && file.Name != "titlepage.xhtml" {
 						spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, id))
 					}
-					if ext == ".ncx" {
-						spineArr = append(spineArr, `<itemref idref="ncx"/>`)
-						manifestArr = append(manifestArr, fmt.Sprintf(`<item href="%v" id="ncx" media-type="%v"/>`, sourcefile, mt))
-					} else {
+					if sourcefile != strings.TrimLeft(this.Config.Cover, "./") { //不是封面图片，则追加进来。封面图片前面已经追加进来了
 						manifestArr = append(manifestArr, fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, mt))
 					}
 				}
@@ -242,6 +271,52 @@ func (this *Converter) generateContentOpf() (err error) {
 	}
 	pkg = fmt.Sprintf(pkg, meta, manifest, spine, guide)
 	return ioutil.WriteFile(this.BasePath+"/content.opf", []byte(pkg), os.ModePerm)
+}
+
+//转成epub
+func (this *Converter) convertToEpub() (err error) {
+	args := []string{
+		this.BasePath + "/content.epub",
+		this.BasePath + "/" + output + "/book.epub",
+	}
+	return exec.Command(ebookConvert, args...).Run()
+}
+
+//转成mobi
+func (this *Converter) convertToMobi() (err error) {
+	args := []string{
+		this.BasePath + "/content.epub",
+		this.BasePath + "/" + output + "/book.mobi",
+	}
+	return exec.Command(ebookConvert, args...).Run()
+}
+
+//转成pdf
+func (this *Converter) convertToPdf() (err error) {
+	args := []string{
+		this.BasePath + "/content.epub",
+		this.BasePath + "/" + output + "/book.pdf",
+	}
+	//页面大小
+	if len(this.Config.PaperSize) > 0 {
+		args = append(args, "--paper-size", this.Config.PaperSize)
+	}
+	//文字大小
+	if len(this.Config.FontSize) > 0 {
+		args = append(args, "--pdf-default-font-size", this.Config.FontSize)
+	}
+
+	//header template
+	if len(this.Config.Header) > 0 {
+		args = append(args, "--pdf-header-template", this.Config.Header)
+	}
+
+	//footer template
+	if len(this.Config.Footer) > 0 {
+		args = append(args, "--pdf-footer-template", this.Config.Footer)
+	}
+
+	return exec.Command(ebookConvert, args...).Run()
 }
 
 //最后一步

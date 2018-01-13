@@ -8,11 +8,11 @@
   "creator":"创建人，如再峰",
   "cover":"cover.jpg",
   "date":"2018-01-04 12:01:01",
-  "footer":"<p class='color:red;'>这是footer</p>",
-  "header":"<p class='color:red;'>这是header</p>",
+  "header":"<p>_SECTION_</p>",
+  "footer":"<p>本文档使用 <a href='https://www.myquant.cn'>掘金量化</a> 构建 <span style='float:right'>- _PAGENUM_ -</span></p>",
   "format":["pdf","epub","mobi"],
-  "paper_size":"a3",
-  "more_options":[],
+  "paper_size":"a4",
+  "font_size":"16",
   "toc":[
     {
       "id":1,
