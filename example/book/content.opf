@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+		<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+		  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata">
+			
+		<dc:title>python文档</dc:title>
+		<dc:contributor opf:role="bkp">掘金量化</dc:contributor>
+		<dc:publisher>掘金量化</dc:publisher>
+		<dc:description>掘金量化Python SDK文档</dc:description>
+		<dc:language>zh-CN</dc:language>
+		<dc:creator opf:file-as="Unknown" opf:role="aut">创建人，如再峰</dc:creator>
+		<meta name="calibre:timestamp" content="2018-01-04 12:01:01"/>
+	<meta name="cover" content="cover"/>
+		  </metadata>
+		  <manifest>
+			<item href="cover.jpg" id="cover" media-type="image/jpeg"/><item href="META-INF/container.xml" id="a9e14194a23963a4880840ac6c962778" media-type="text/xml"/>
+<item href="cover.jpg" id="4add576c7a102e60be8d4193c9c93870" media-type="image/jpeg"/>
+<item href="css/editormd.css" id="d5dafe1805c2210a1d8eabbbf977d8a2" media-type="text/css"/>
+<item href="css/myquant.css" id="ca3052818f0fc2df8d5a1c94d3dd647c" media-type="text/css"/>
+<item href="html/1.html" id="5f1041c0f27bb73fb85564caac5f8be1" media-type="application/xhtml+xml"/>
+<item href="html/10.html" id="d4be0d8be52e7fbb0fdcf7077612d4d5" media-type="application/xhtml+xml"/>
+<item href="html/2.html" id="c0b4b5a46b3fbf45c49265f46850eea9" media-type="application/xhtml+xml"/>
+<item href="html/3.html" id="bb9718c2d3a512750bd4bba036987332" media-type="application/xhtml+xml"/>
+<item href="html/4.html" id="94750d6e44472dcb34a5877377bc982d" media-type="application/xhtml+xml"/>
+<item href="html/5.html" id="059cb758ee8fc0db04687801569a316e" media-type="application/xhtml+xml"/>
+<item href="html/6.html" id="edf284bdbdfa9249de55eaec67a3ac35" media-type="application/xhtml+xml"/>
+<item href="html/7.html" id="0b966d9ed88823e89cb100759a3f13bd" media-type="application/xhtml+xml"/>
+<item href="html/8.html" id="99c3101963a7c70158db49b5233a1f5d" media-type="application/xhtml+xml"/>
+<item href="html/9.html" id="dba5ec00c5b8efd47ae672d76cf9b8e9" media-type="application/xhtml+xml"/>
+<item href="titlepage.xhtml" id="6ec7aaded7fca09efd4caa726bd156bc" media-type="application/xhtml+xml"/>
+<item href="toc.ncx" id="ncx" media-type="x-dtbncx+xml"/>
+		  </manifest>
+		  <spine toc="ncx">
+			<itemref idref="cover"/>
+<itemref idref="5f1041c0f27bb73fb85564caac5f8be1"/>
+<itemref idref="d4be0d8be52e7fbb0fdcf7077612d4d5"/>
+<itemref idref="c0b4b5a46b3fbf45c49265f46850eea9"/>
+<itemref idref="bb9718c2d3a512750bd4bba036987332"/>
+<itemref idref="94750d6e44472dcb34a5877377bc982d"/>
+<itemref idref="059cb758ee8fc0db04687801569a316e"/>
+<itemref idref="edf284bdbdfa9249de55eaec67a3ac35"/>
+<itemref idref="0b966d9ed88823e89cb100759a3f13bd"/>
+<itemref idref="99c3101963a7c70158db49b5233a1f5d"/>
+<itemref idref="dba5ec00c5b8efd47ae672d76cf9b8e9"/>
+<itemref idref="6ec7aaded7fca09efd4caa726bd156bc"/>
+<itemref idref="ncx"/>
+		  </spine>
+			<guide><reference href="titlepage.xhtml" title="Cover" type="cover"/></guide>
+		</package>
+	

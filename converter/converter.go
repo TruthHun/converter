@@ -174,6 +174,9 @@ func (this *Converter) generateTocNcx() (err error) {
 func (this *Converter) generateContentOpf() (err error) {
 	guide := ``
 	manifest := ``
+	//注意：如果存在封面，则需要把封面放在第一个位置
+	spine := ``
+	spineArr := []string{}
 	meta := `
 		<dc:title>%v</dc:title>
 		<dc:contributor opf:role="bkp">%v</dc:contributor>
@@ -188,29 +191,28 @@ func (this *Converter) generateContentOpf() (err error) {
 		meta = meta + `<meta name="cover" content="cover"/>`
 		guide = `<reference href="titlepage.xhtml" title="Cover" type="cover"/>`
 		manifest = fmt.Sprintf(`<item href="%v" id="cover" media-type="%v"/>`, this.Config.Cover, GetMediaType(filepath.Ext(this.Config.Cover)))
+		spineArr = append(spineArr, `<itemref idref="titlepage"/>`)
 	}
 
-	spine := ``
 	//扫描所有文件
 	if files, err := filetil.ScanFiles(this.BasePath); err == nil {
 		manifestArr := []string{}
-		spineArr := []string{}
+
 		basePath := strings.Replace(this.BasePath, "\\", "/", -1)
 		for _, file := range files {
 			if !file.IsDir && file.Name != "book.json" {
 				id := cryptil.Md5Crypt(file.Path)
 				ext := strings.ToLower(filepath.Ext(file.Path))
 				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
-				mt := GetMediaType(ext)
-				if sourcefile != strings.TrimLeft(this.Config.Cover, "./") && mt != "" { //不是封面图片，且media-type不为空
-					manifestArr = append(manifestArr,
-						fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, mt),
-					)
+				if mt := GetMediaType(ext); mt != "" { //不是封面图片，且media-type不为空
 					if ext == ".html" || ext == ".xhtml" {
 						spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, id))
 					}
 					if ext == ".ncx" {
 						spineArr = append(spineArr, `<itemref idref="ncx"/>`)
+						manifestArr = append(manifestArr, fmt.Sprintf(`<item href="%v" id="ncx" media-type="%v"/>`, sourcefile, mt))
+					} else {
+						manifestArr = append(manifestArr, fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, mt))
 					}
 				}
 			}
