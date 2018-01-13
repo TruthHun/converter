@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+		<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+		  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata">
+			<dc:title>python文档</dc:title>
+			<dc:contributor opf:role="bkp">掘金量化</dc:contributor>
+			<dc:publisher>掘金量化</dc:publisher>
+			<dc:description>掘金量化Python SDK文档</dc:description>
+			<dc:language>zh-CN</dc:language>
+			<dc:creator opf:file-as="Unknown" opf:role="aut">创建人，如再峰</dc:creator>
+			<meta name="calibre:timestamp" content="2018-01-04 12:01:01"/>
+	<meta name="cover" content="cover"/>
+		  </metadata>
+		  <manifest>
+			<item href="cover.jpg" id="cover" media-type="image/jpeg"/><item href="META-INF/container.xml" id="a9e14194a23963a4880840ac6c962778" media-type="text/xml"/>
+<item href="css/editormd.css" id="d5dafe1805c2210a1d8eabbbf977d8a2" media-type="text/css"/>
+<item href="css/myquant.css" id="ca3052818f0fc2df8d5a1c94d3dd647c" media-type="text/css"/>
+<item href="html/1.html" id="html1" media-type="application/xhtml+xml"/>
+<item href="html/2.html" id="html2" media-type="application/xhtml+xml"/>
+<item href="html/3.html" id="html3" media-type="application/xhtml+xml"/>
+<item href="html/4.html" id="html4" media-type="application/xhtml+xml"/>
+<item href="html/5.html" id="html5" media-type="application/xhtml+xml"/>
+<item href="html/6.html" id="html6" media-type="application/xhtml+xml"/>
+<item href="html/66.html" id="html7" media-type="application/xhtml+xml"/>
+<item href="html/7.html" id="html8" media-type="application/xhtml+xml"/>
+<item href="html/8.html" id="html9" media-type="application/xhtml+xml"/>
+<item href="html/9.html" id="html10" media-type="application/xhtml+xml"/>
+<item href="titlepage.xhtml" id="titlepage" media-type="application/xhtml+xml"/>
+<item href="toc.ncx" id="ncx" media-type="x-dtbncx+xml"/>
+		  </manifest>
+		  <spine toc="ncx">
+			<itemref idref="titlepage"/>
+<itemref idref="html1"/>
+<itemref idref="html2"/>
+<itemref idref="html3"/>
+<itemref idref="html4"/>
+<itemref idref="html5"/>
+<itemref idref="html6"/>
+<itemref idref="html7"/>
+<itemref idref="html8"/>
+<itemref idref="html9"/>
+<itemref idref="html10"/>
+		  </spine>
+			<guide><reference href="titlepage.xhtml" title="Cover" type="cover"/></guide>
+		</package>
+	
