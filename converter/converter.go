@@ -11,6 +11,8 @@ import (
 
 	"os/exec"
 
+	"errors"
+
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/filetil"
 	"github.com/TruthHun/gotil/util"
@@ -104,18 +106,26 @@ func (this *Converter) Convert() (err error) {
 		//创建导出文件夹
 		os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
 		if len(this.Config.Format) > 0 {
+			var errs []string
 			for _, v := range this.Config.Format {
 				fmt.Println("")
 				fmt.Println("convert to " + v)
 				switch strings.ToLower(v) {
 				case "epub":
-					err = this.convertToEpub()
+					if err = this.convertToEpub(); err != nil {
+						errs = append(errs, err.Error())
+					}
 				case "mobi":
-					err = this.convertToMobi()
+					if err = this.convertToMobi(); err != nil {
+						errs = append(errs, err.Error())
+					}
 				case "pdf":
-					err = this.convertToPdf()
+					if err = this.convertToPdf(); err != nil {
+						errs = append(errs, err.Error())
+					}
 				}
 			}
+			err = errors.New(strings.Join(errs, "\n"))
 		} else {
 			err = this.convertToPdf()
 		}
@@ -257,7 +267,6 @@ func (this *Converter) generateContentOpf() (err error) {
 		manifestArr []string
 		spine       string //注意：如果存在封面，则需要把封面放在第一个位置
 		spineArr    []string
-		//spineMap    = make(map[int]string)
 	)
 
 	meta := `<dc:title>%v</dc:title>
@@ -288,7 +297,6 @@ func (this *Converter) generateContentOpf() (err error) {
 					if file.Name == "titlepage.xhtml" {
 						id = "titlepage"
 					} else {
-						fmt.Println(file.Path)
 						id = cryptil.Md5Crypt(sourcefile)
 					}
 				}
