@@ -13,6 +13,7 @@ import (
 
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/filetil"
+	"github.com/TruthHun/gotil/util"
 	"github.com/TruthHun/gotil/ziptil"
 )
 
@@ -20,6 +21,7 @@ type Converter struct {
 	BasePath       string
 	Config         Config
 	GeneratedCover string
+	Debug          bool
 }
 
 //目录结构
@@ -48,6 +50,7 @@ type Config struct {
 	PaperSize   string   `json:"paper_size"`   //页面大小
 	MoreOptions []string `json:"more_options"` //更多导出选项
 	Toc         []Toc    `json:"toc"`
+	Order       []string `json:"-"`
 }
 
 var (
@@ -56,11 +59,16 @@ var (
 )
 
 //根据json配置文件，创建文档转化对象
-func NewConverter(configFile string) (converter *Converter, err error) {
+func NewConverter(configFile string, debug ...bool) (converter *Converter, err error) {
 	var (
 		cfg      Config
 		basepath string
+		db       bool
 	)
+	if len(debug) > 0 {
+		db = debug[0]
+	}
+
 	if cfg, err = parseConfig(configFile); err == nil {
 		if basepath, err = filepath.Abs(filepath.Dir(configFile)); err == nil {
 			//设置默认值
@@ -70,6 +78,7 @@ func NewConverter(configFile string) (converter *Converter, err error) {
 			converter = &Converter{
 				Config:   cfg,
 				BasePath: basepath,
+				Debug:    db,
 			}
 		}
 	}
@@ -78,13 +87,15 @@ func NewConverter(configFile string) (converter *Converter, err error) {
 
 //执行文档转换
 func (this *Converter) Convert() (err error) {
-	defer this.converterDefer() //最后移除创建的多余而文件
+	//defer this.converterDefer() //最后移除创建的多余而文件
 
 	this.generateMimeType()
 	this.generateMetaInfo()
 	this.generateTocNcx()     //生成目录
 	this.generateTitlePage()  //生成封面
 	this.generateContentOpf() //这个必须是generate*系列方法的最后一个调用
+
+	fmt.Println(util.InterfaceToJson(this.Config.Order))
 
 	//将当前文件夹下的所有文件压缩成zip包，然后直接改名成content.epub
 	f := this.BasePath + "/content.epub"
@@ -94,6 +105,7 @@ func (this *Converter) Convert() (err error) {
 		os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
 		if len(this.Config.Format) > 0 {
 			for _, v := range this.Config.Format {
+				fmt.Println("")
 				fmt.Println("convert to " + v)
 				switch strings.ToLower(v) {
 				case "epub":
@@ -188,9 +200,52 @@ func (this *Converter) generateTocNcx() (err error) {
 			  <navMap>%v</navMap>
 			</ncx>
 	`
-	codes, _ := tocToXml(this.Config.Toc, 0, 1)
+	codes, _ := this.tocToXml(0, 1)
 	ncx = fmt.Sprintf(ncx, this.Config.Language, this.Config.Title, strings.Join(codes, ""))
 	return ioutil.WriteFile(this.BasePath+"/toc.ncx", []byte(ncx), os.ModePerm)
+}
+
+//将toc转成toc.ncx文件
+func (this *Converter) tocToXml(pid, idx int) (codes []string, next_idx int) {
+	var code string
+	for _, toc := range this.Config.Toc {
+		if toc.Pid == pid {
+			code, idx = this.getNavPoint(toc, idx)
+			codes = append(codes, code)
+			for _, item := range this.Config.Toc {
+				if item.Pid == toc.Id {
+					code, idx = this.getNavPoint(item, idx)
+					codes = append(codes, code)
+					var code_arr []string
+					code_arr, idx = this.tocToXml(item.Id, idx)
+					codes = append(codes, code_arr...)
+					codes = append(codes, `</navPoint>`)
+				}
+			}
+			codes = append(codes, `</navPoint>`)
+		}
+	}
+	next_idx = idx
+	return
+}
+
+//<navPoint id="uypBSBpbQHAkc2dM2WoMbaA" playOrder="11">
+//<navLabel>
+//<text>2.3 Controller运行机制</text>
+//</navLabel>
+//<content src="html/11.html"/>
+//</navPoint>
+func (this *Converter) getNavPoint(toc Toc, idx int) (navpoint string, nextidx int) {
+	navpoint = `
+	<navPoint id="id%v" playOrder="%v">
+		<navLabel>
+			<text>%v</text>
+		</navLabel>
+		<content src="%v"/>`
+	navpoint = fmt.Sprintf(navpoint, toc.Id, idx, toc.Title, toc.Link)
+	this.Config.Order = append(this.Config.Order, toc.Link)
+	nextidx = idx + 1
+	return
 }
 
 //生成content.opf文件
@@ -202,6 +257,7 @@ func (this *Converter) generateContentOpf() (err error) {
 		manifestArr []string
 		spine       string //注意：如果存在封面，则需要把封面放在第一个位置
 		spineArr    []string
+		//spineMap    = make(map[int]string)
 	)
 
 	meta := `<dc:title>%v</dc:title>
@@ -226,25 +282,25 @@ func (this *Converter) generateContentOpf() (err error) {
 		for _, file := range files {
 			if !file.IsDir {
 				ext := strings.ToLower(filepath.Ext(file.Path))
+				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
 				id := "ncx"
 				if ext != ".ncx" {
 					if file.Name == "titlepage.xhtml" {
 						id = "titlepage"
 					} else {
-						id = cryptil.Md5Crypt(file.Path)
+						fmt.Println(file.Path)
+						id = cryptil.Md5Crypt(sourcefile)
 					}
-
 				}
-				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
 				if mt := GetMediaType(ext); mt != "" { //不是封面图片，且media-type不为空
-					if (ext == ".html" || ext == ".xhtml") && file.Name != "titlepage.xhtml" {
-						spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, id))
-					}
 					if sourcefile != strings.TrimLeft(this.Config.Cover, "./") { //不是封面图片，则追加进来。封面图片前面已经追加进来了
 						manifestArr = append(manifestArr, fmt.Sprintf(`<item href="%v" id="%v" media-type="%v"/>`, sourcefile, id, mt))
 					}
 				}
 			}
+		}
+		for _, link := range this.Config.Order {
+			spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, cryptil.Md5Crypt(link)))
 		}
 		manifest = manifest + strings.Join(manifestArr, "\n")
 		spine = strings.Join(spineArr, "\n")
@@ -279,7 +335,11 @@ func (this *Converter) convertToEpub() (err error) {
 		this.BasePath + "/content.epub",
 		this.BasePath + "/" + output + "/book.epub",
 	}
-	return exec.Command(ebookConvert, args...).Run()
+	cmd := exec.Command(ebookConvert, args...)
+	if this.Debug {
+		fmt.Println(cmd.Args)
+	}
+	return cmd.Run()
 }
 
 //转成mobi
@@ -288,7 +348,12 @@ func (this *Converter) convertToMobi() (err error) {
 		this.BasePath + "/content.epub",
 		this.BasePath + "/" + output + "/book.mobi",
 	}
-	return exec.Command(ebookConvert, args...).Run()
+	cmd := exec.Command(ebookConvert, args...)
+	if this.Debug {
+		fmt.Println(cmd.Args)
+	}
+
+	return cmd.Run()
 }
 
 //转成pdf
@@ -315,11 +380,9 @@ func (this *Converter) convertToPdf() (err error) {
 	if len(this.Config.Footer) > 0 {
 		args = append(args, "--pdf-footer-template", this.Config.Footer)
 	}
-
-	return exec.Command(ebookConvert, args...).Run()
-}
-
-//最后一步
-func ConvertToPdf() {
-
+	cmd := exec.Command(ebookConvert, args...)
+	if this.Debug {
+		fmt.Println(cmd.Args)
+	}
+	return cmd.Run()
 }

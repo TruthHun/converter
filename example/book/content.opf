@@ -11,34 +11,34 @@
 	<meta name="cover" content="cover"/>
 		  </metadata>
 		  <manifest>
-			<item href="cover.jpg" id="cover" media-type="image/jpeg"/><item href="META-INF/container.xml" id="a9e14194a23963a4880840ac6c962778" media-type="text/xml"/>
-<item href="css/editormd.css" id="d5dafe1805c2210a1d8eabbbf977d8a2" media-type="text/css"/>
-<item href="css/myquant.css" id="ca3052818f0fc2df8d5a1c94d3dd647c" media-type="text/css"/>
-<item href="html/1.html" id="html1" media-type="application/xhtml+xml"/>
-<item href="html/2.html" id="html2" media-type="application/xhtml+xml"/>
-<item href="html/3.html" id="html3" media-type="application/xhtml+xml"/>
-<item href="html/4.html" id="html4" media-type="application/xhtml+xml"/>
-<item href="html/5.html" id="html5" media-type="application/xhtml+xml"/>
-<item href="html/6.html" id="html6" media-type="application/xhtml+xml"/>
-<item href="html/66.html" id="html7" media-type="application/xhtml+xml"/>
-<item href="html/7.html" id="html8" media-type="application/xhtml+xml"/>
-<item href="html/8.html" id="html9" media-type="application/xhtml+xml"/>
-<item href="html/9.html" id="html10" media-type="application/xhtml+xml"/>
+			<item href="cover.jpg" id="cover" media-type="image/jpeg"/><item href="META-INF/container.xml" id="119e1d048759f3ab049ca5d83d643fe3" media-type="text/xml"/>
+<item href="css/editormd.css" id="ca202ce83ee63029ae9bab8b7ceddeb2" media-type="text/css"/>
+<item href="css/myquant.css" id="b8ac74557793883fed364bec745a632b" media-type="text/css"/>
+<item href="html/1.html" id="711639d391911f5ea4afc007b56acbcf" media-type="application/xhtml+xml"/>
+<item href="html/2.html" id="c2b69c1e5aec43b9d3222346a7e55bb5" media-type="application/xhtml+xml"/>
+<item href="html/3.html" id="12991171f10d667fc82d8ce58e669d54" media-type="application/xhtml+xml"/>
+<item href="html/4.html" id="3c34bee9d42703715624aa0ce0f14fa8" media-type="application/xhtml+xml"/>
+<item href="html/5.html" id="9b461efb044dc4d9bf9a6fcb837cfb7a" media-type="application/xhtml+xml"/>
+<item href="html/6.html" id="d61d7d82ec43cec2114d5be35a3807bf" media-type="application/xhtml+xml"/>
+<item href="html/66.html" id="ca2bfc70ac7af94820a90d27dd594664" media-type="application/xhtml+xml"/>
+<item href="html/7.html" id="500fa27fe1d22b7c459a4ff9435b5857" media-type="application/xhtml+xml"/>
+<item href="html/8.html" id="85c617dbd6e48305024f887b8eff21e7" media-type="application/xhtml+xml"/>
+<item href="html/9.html" id="8fe07da4826eca7f55ff1c9096009132" media-type="application/xhtml+xml"/>
 <item href="titlepage.xhtml" id="titlepage" media-type="application/xhtml+xml"/>
 <item href="toc.ncx" id="ncx" media-type="x-dtbncx+xml"/>
 		  </manifest>
 		  <spine toc="ncx">
 			<itemref idref="titlepage"/>
-<itemref idref="html1"/>
-<itemref idref="html2"/>
-<itemref idref="html3"/>
-<itemref idref="html4"/>
-<itemref idref="html5"/>
-<itemref idref="html6"/>
-<itemref idref="html7"/>
-<itemref idref="html8"/>
-<itemref idref="html9"/>
-<itemref idref="html10"/>
+<itemref idref="711639d391911f5ea4afc007b56acbcf"/>
+<itemref idref="c2b69c1e5aec43b9d3222346a7e55bb5"/>
+<itemref idref="3c34bee9d42703715624aa0ce0f14fa8"/>
+<itemref idref="9b461efb044dc4d9bf9a6fcb837cfb7a"/>
+<itemref idref="d61d7d82ec43cec2114d5be35a3807bf"/>
+<itemref idref="12991171f10d667fc82d8ce58e669d54"/>
+<itemref idref="500fa27fe1d22b7c459a4ff9435b5857"/>
+<itemref idref="85c617dbd6e48305024f887b8eff21e7"/>
+<itemref idref="8fe07da4826eca7f55ff1c9096009132"/>
+<itemref idref="ca2bfc70ac7af94820a90d27dd594664"/>
 		  </spine>
 			<guide><reference href="titlepage.xhtml" title="Cover" type="cover"/></guide>
 		</package>

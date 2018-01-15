@@ -22,17 +22,17 @@
 		<content src="html/2.html"/>
 	<navPoint id="id4" playOrder="3">
 		<navLabel>
-			<text>1.1.1 API介绍</text>
+			<text>1.2.1 API介绍</text>
 		</navLabel>
 		<content src="html/4.html"/></navPoint>
 	<navPoint id="id5" playOrder="4">
 		<navLabel>
-			<text>1.1.2 枚举常量</text>
+			<text>1.2.2 枚举常量</text>
 		</navLabel>
 		<content src="html/5.html"/></navPoint>
 	<navPoint id="id6" playOrder="5">
 		<navLabel>
-			<text>1.1.3 错误码</text>
+			<text>1.2.3 错误码</text>
 		</navLabel>
 		<content src="html/6.html"/></navPoint></navPoint>
 	<navPoint id="id3" playOrder="6">
