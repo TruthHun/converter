@@ -15,7 +15,6 @@ import (
 
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/filetil"
-	"github.com/TruthHun/gotil/util"
 	"github.com/TruthHun/gotil/ziptil"
 )
 
@@ -89,15 +88,13 @@ func NewConverter(configFile string, debug ...bool) (converter *Converter, err e
 
 //执行文档转换
 func (this *Converter) Convert() (err error) {
-	//defer this.converterDefer() //最后移除创建的多余而文件
+	defer this.converterDefer() //最后移除创建的多余而文件
 
 	this.generateMimeType()
 	this.generateMetaInfo()
 	this.generateTocNcx()     //生成目录
 	this.generateTitlePage()  //生成封面
 	this.generateContentOpf() //这个必须是generate*系列方法的最后一个调用
-
-	fmt.Println(util.InterfaceToJson(this.Config.Order))
 
 	//将当前文件夹下的所有文件压缩成zip包，然后直接改名成content.epub
 	f := this.BasePath + "/content.epub"
