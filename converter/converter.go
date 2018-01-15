@@ -51,7 +51,8 @@ type Config struct {
 	PaperSize   string   `json:"paper_size"`   //页面大小
 	MoreOptions []string `json:"more_options"` //更多导出选项
 	Toc         []Toc    `json:"toc"`
-	Order       []string `json:"-"`
+	///////////////////////////////////////////
+	Order []string `json:"-"`
 }
 
 var (
@@ -304,8 +305,14 @@ func (this *Converter) generateContentOpf() (err error) {
 				}
 			}
 		}
+
+		items := make(map[string]string)
 		for _, link := range this.Config.Order {
-			spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, cryptil.Md5Crypt(link)))
+			id := cryptil.Md5Crypt(link)
+			if _, ok := items[id]; !ok { //去重
+				items[id] = id
+				spineArr = append(spineArr, fmt.Sprintf(`<itemref idref="%v"/>`, id))
+			}
 		}
 		manifest = manifest + strings.Join(manifestArr, "\n")
 		spine = strings.Join(spineArr, "\n")
