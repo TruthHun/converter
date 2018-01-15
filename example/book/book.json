@@ -13,6 +13,12 @@
   "format":["pdf","epub","mobi"],
   "paper_size":"a4",
   "font_size":"16",
+  "more":[
+    "--pdf-page-margin-bottom","72",
+    "--pdf-page-margin-left","72",
+    "--pdf-page-margin-right","72",
+    "--pdf-page-margin-top","72"
+  ],
   "toc":[
     {
       "id":1,

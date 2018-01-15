@@ -47,9 +47,9 @@ type Config struct {
 	Publisher   string   `json:"publisher"`
 	Title       string   `json:"title"`
 	Format      []string `json:"format"`
-	FontSize    string   `json:"font_size"`    //默认的pdf导出字体大小
-	PaperSize   string   `json:"paper_size"`   //页面大小
-	MoreOptions []string `json:"more_options"` //更多导出选项
+	FontSize    string   `json:"font_size"`  //默认的pdf导出字体大小
+	PaperSize   string   `json:"paper_size"` //页面大小
+	More        []string `json:"more"`       //更多导出选项[PDF导出选项，具体参考：https://manual.calibre-ebook.com/generated/en/ebook-convert.html#pdf-output-options]
 	Toc         []Toc    `json:"toc"`
 	///////////////////////////////////////////
 	Order []string `json:"-"`
@@ -392,6 +392,12 @@ func (this *Converter) convertToPdf() (err error) {
 	if len(this.Config.Footer) > 0 {
 		args = append(args, "--pdf-footer-template", this.Config.Footer)
 	}
+
+	//更多选项
+	if len(this.Config.More) > 0 {
+		args = append(args, this.Config.More...)
+	}
+
 	cmd := exec.Command(ebookConvert, args...)
 	if this.Debug {
 		fmt.Println(cmd.Args)
