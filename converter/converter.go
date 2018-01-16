@@ -25,12 +25,42 @@ type Converter struct {
 	Debug          bool
 }
 
-//目录结构
+//目录结构,TOC:table of content
 type Toc struct {
 	Id    int    `json:"id"`
 	Link  string `json:"link"`
 	Pid   int    `json:"pid"`
 	Title string `json:"title"`
+}
+
+//meta数据结构
+//https://manual.calibre-ebook.com/generated/en/ebook-convert.html#metadata
+type Meta struct {
+	Title       string    `json:"title"`       //文档标题
+	Author      string    `json:"author"`      //作者
+	Publisher   string    `json:"publisher"`   //发布，如xx出版社
+	Identifier  string    `json:"identifier"`  //标识，即uuid
+	Description string    `json:"description"` //文档摘要
+	Date        time.Time `json:"date"`        //发布时间
+	Cover       string    `json:"cover"`       //封面图片
+	Language    string    `json:"language"`    //语言，中文：zh 英文：en
+}
+
+//PDF输出选项
+//https://manual.calibre-ebook.com/generated/en/ebook-convert.html#pdf-output-options
+type OptionsPdf struct {
+	PaperSize          string `json:"paper_size"` //页面大小，可选项'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'b0', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'legal', 'letter'
+	PdfDefaultFontSize string `json:"pdf_default_font_size"`
+}
+
+//epub输出选项
+//https://manual.calibre-ebook.com/generated/en/ebook-convert.html#epub-output-options
+type OptionsEpub struct {
+}
+
+//mobi输出选项
+//https://manual.calibre-ebook.com/generated/en/ebook-convert.html#mobi-output-options
+type OptionsMobi struct {
 }
 
 //config.json文件解析结构
