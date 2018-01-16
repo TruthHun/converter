@@ -35,24 +35,28 @@ type Toc struct {
 
 //config.json文件解析结构
 type Config struct {
-	Contributor string   `json:"contributor"`
-	Cover       string   `json:"cover"`
-	Creator     string   `json:"creator"`
-	Timestamp   string   `json:"date"`
-	Description string   `json:"description"`
-	Footer      string   `json:"footer"`
-	Header      string   `json:"header"`
-	Identifier  string   `json:"identifier"`
-	Language    string   `json:"language"`
-	Publisher   string   `json:"publisher"`
-	Title       string   `json:"title"`
-	Format      []string `json:"format"`
-	FontSize    string   `json:"font_size"`  //默认的pdf导出字体大小
-	PaperSize   string   `json:"paper_size"` //页面大小
-	More        []string `json:"more"`       //更多导出选项[PDF导出选项，具体参考：https://manual.calibre-ebook.com/generated/en/ebook-convert.html#pdf-output-options]
-	Toc         []Toc    `json:"toc"`
+	Cover        string   `json:"cover"`         //封面图片，或者封面html文件
+	Timestamp    string   `json:"date"`          //时间日期,如“2018-01-01 12:12:21”，其实是time.Time格式，但是直接用string就好
+	Description  string   `json:"description"`   //摘要
+	Footer       string   `json:"footer"`        //pdf的footer
+	Header       string   `json:"header"`        //pdf的header
+	Identifier   string   `json:"identifier"`    //即uuid，留空即可
+	Language     string   `json:"language"`      //语言，如zh、en、zh-CN、en-US等
+	Creator      string   `json:"creator"`       //作者，即author
+	Publisher    string   `json:"publisher"`     //出版单位
+	Contributor  string   `json:"contributor"`   //同Publisher
+	Title        string   `json:"title"`         //文档标题
+	Format       []string `json:"format"`        //导出格式，可选值：pdf、epub、mobi
+	FontSize     string   `json:"font_size"`     //默认的pdf导出字体大小
+	PaperSize    string   `json:"paper_size"`    //页面大小
+	MarginLeft   string   `json:"margin_left"`   //PDF文档左边距，写数字即可，默认72pt
+	MarginRight  string   `json:"margin_right"`  //PDF文档左边距，写数字即可，默认72pt
+	MarginTop    string   `json:"margin_top"`    //PDF文档左边距，写数字即可，默认72pt
+	MarginBottom string   `json:"margin_bottom"` //PDF文档左边距，写数字即可，默认72pt
+	More         []string `json:"more"`          //更多导出选项[PDF导出选项，具体参考：https://manual.calibre-ebook.com/generated/en/ebook-convert.html#pdf-output-options]
+	Toc          []Toc    `json:"toc"`           //目录
 	///////////////////////////////////////////
-	Order []string `json:"-"`
+	Order []string `json:"-"` //这个不需要赋值
 }
 
 var (
@@ -401,6 +405,19 @@ func (this *Converter) convertToPdf() (err error) {
 	//footer template
 	if len(this.Config.Footer) > 0 {
 		args = append(args, "--pdf-footer-template", this.Config.Footer)
+	}
+
+	if len(this.Config.MarginLeft) > 0 {
+		args = append(args, "--pdf-page-margin-left", this.Config.MarginLeft)
+	}
+	if len(this.Config.MarginTop) > 0 {
+		args = append(args, "--pdf-page-margin-top", this.Config.MarginTop)
+	}
+	if len(this.Config.MarginRight) > 0 {
+		args = append(args, "--pdf-page-margin-right", this.Config.MarginRight)
+	}
+	if len(this.Config.MarginBottom) > 0 {
+		args = append(args, "--pdf-page-margin-bottom", this.Config.MarginBottom)
 	}
 
 	//更多选项
