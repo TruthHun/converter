@@ -91,11 +91,21 @@ func NewConverter(configFile string, debug ...bool) (converter *Converter, err e
 func (this *Converter) Convert() (err error) {
 	defer this.converterDefer() //最后移除创建的多余而文件
 
-	this.generateMimeType()
-	this.generateMetaInfo()
-	this.generateTocNcx()     //生成目录
-	this.generateTitlePage()  //生成封面
-	this.generateContentOpf() //这个必须是generate*系列方法的最后一个调用
+	if err = this.generateMimeType(); err != nil {
+		return
+	}
+	if err = this.generateMetaInfo(); err != nil {
+		return
+	}
+	if err = this.generateTocNcx(); err != nil { //生成目录
+		return
+	}
+	if err = this.generateTitlePage(); err != nil { //生成封面
+		return
+	}
+	if err = this.generateContentOpf(); err != nil { //这个必须是generate*系列方法的最后一个调用
+		return
+	}
 
 	//将当前文件夹下的所有文件压缩成zip包，然后直接改名成content.epub
 	f := this.BasePath + "/content.epub"
