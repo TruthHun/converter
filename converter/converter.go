@@ -35,6 +35,7 @@ type Toc struct {
 
 //config.json文件解析结构
 type Config struct {
+	Charset      string   `json:"charset"`       //字符编码，默认utf-8编码
 	Cover        string   `json:"cover"`         //封面图片，或者封面html文件
 	Timestamp    string   `json:"date"`          //时间日期,如“2018-01-01 12:12:21”，其实是time.Time格式，但是直接用string就好
 	Description  string   `json:"description"`   //摘要
@@ -81,6 +82,9 @@ func NewConverter(configFile string, debug ...bool) (converter *Converter, err e
 			if len(cfg.Timestamp) == 0 {
 				cfg.Timestamp = time.Now().Format("2006-01-02 15:04:05")
 			}
+			if len(cfg.Charset) == 0 {
+				cfg.Charset = "utf-8"
+			}
 			converter = &Converter{
 				Config:   cfg,
 				BasePath: basepath,
@@ -93,7 +97,9 @@ func NewConverter(configFile string, debug ...bool) (converter *Converter, err e
 
 //执行文档转换
 func (this *Converter) Convert() (err error) {
-	defer this.converterDefer() //最后移除创建的多余而文件
+	if !this.Debug { //调试模式下不删除生成的文件
+		defer this.converterDefer() //最后移除创建的多余而文件
+	}
 
 	if err = this.generateMimeType(); err != nil {
 		return
@@ -102,6 +108,9 @@ func (this *Converter) Convert() (err error) {
 		return
 	}
 	if err = this.generateTocNcx(); err != nil { //生成目录
+		return
+	}
+	if err = this.generateSummary(); err != nil { //生成文档内目录
 		return
 	}
 	if err = this.generateTitlePage(); err != nil { //生成封面
@@ -154,6 +163,7 @@ func (this *Converter) converterDefer() {
 	os.RemoveAll(this.BasePath + "/toc.ncx")
 	os.RemoveAll(this.BasePath + "/content.opf")
 	os.RemoveAll(this.BasePath + "/titlepage.xhtml") //封面图片待优化
+	os.RemoveAll(this.BasePath + "/summary.html")    //文档目录
 }
 
 //生成metainfo
@@ -179,10 +189,10 @@ func (this *Converter) generateMimeType() (err error) {
 //生成封面
 func (this *Converter) generateTitlePage() (err error) {
 	if ext := strings.ToLower(filepath.Ext(this.Config.Cover)); !(ext == ".html" || ext == ".xhtml") {
-		xml := `<?xml version='1.0' encoding='utf-8'?>
+		xml := `<?xml version='1.0' encoding='` + this.Config.Charset + `'?>
 				<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="` + this.Config.Language + `">
 					<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+						<meta http-equiv="Content-Type" content="text/html; charset=` + this.Config.Charset + `"/>
 						<meta name="calibre:cover" content="true"/>
 						<title>Cover</title>
 						<style type="text/css" title="override_css">
@@ -208,7 +218,7 @@ func (this *Converter) generateTitlePage() (err error) {
 
 //生成文档目录
 func (this *Converter) generateTocNcx() (err error) {
-	ncx := `<?xml version='1.0' encoding='utf-8'?>
+	ncx := `<?xml version='1.0' encoding='` + this.Config.Charset + `'?>
 			<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="%v">
 			  <head>
 				<meta content="4" name="dtb:depth"/>
@@ -225,6 +235,28 @@ func (this *Converter) generateTocNcx() (err error) {
 	codes, _ := this.tocToXml(0, 1)
 	ncx = fmt.Sprintf(ncx, this.Config.Language, this.Config.Title, strings.Join(codes, ""))
 	return ioutil.WriteFile(this.BasePath+"/toc.ncx", []byte(ncx), os.ModePerm)
+}
+
+//生成文档目录，即summary.html
+func (this *Converter) generateSummary() (err error) {
+	//目录
+	summary := `<!DOCTYPE html>
+				<html lang="zh-CN">
+				<head>
+				    <meta charset="UTF-8">
+				    <title>目录</title>
+				    <style>
+				        body{margin: 0px;padding: 0px;}h1{text-align: center;padding: 0px;margin: 0px;}ul,li{list-style: none;}
+				        a{text-decoration: none;color: #4183c4;text-decoration: none;font-size: 16px;line-height: 28px;}
+				    </style>
+				</head>
+				<body>
+				    <h1>目&nbsp;&nbsp;&nbsp;&nbsp;录</h1>
+				    %v
+				</body>
+				</html>`
+	summary = fmt.Sprintf(summary, strings.Join(this.tocToSummary(0), ""))
+	return ioutil.WriteFile(this.BasePath+"/summary.html", []byte(summary), os.ModePerm)
 }
 
 //将toc转成toc.ncx文件
@@ -251,12 +283,29 @@ func (this *Converter) tocToXml(pid, idx int) (codes []string, next_idx int) {
 	return
 }
 
-//<navPoint id="uypBSBpbQHAkc2dM2WoMbaA" playOrder="11">
-//<navLabel>
-//<text>2.3 Controller运行机制</text>
-//</navLabel>
-//<content src="html/11.html"/>
-//</navPoint>
+//将toc转成toc.ncx文件
+func (this *Converter) tocToSummary(pid int) (summarys []string) {
+	summarys = append(summarys, "<ul>")
+	for _, toc := range this.Config.Toc {
+		if toc.Pid == pid {
+			summarys = append(summarys, fmt.Sprintf(`<li><a href="%v">%v</a></li>`, toc.Link, toc.Title))
+			for _, item := range this.Config.Toc {
+
+				if item.Pid == toc.Id {
+					summarys = append(summarys, fmt.Sprintf(`<li><ul><li><a href="%v">%v</a></li>`, item.Link, item.Title))
+					summarys = append(summarys, "<li>")
+					summarys = append(summarys, this.tocToSummary(item.Id)...)
+					summarys = append(summarys, "</li></ul></li>")
+				}
+
+			}
+		}
+	}
+	summarys = append(summarys, "</ul>")
+	return
+}
+
+//生成navPoint
 func (this *Converter) getNavPoint(toc Toc, idx int) (navpoint string, nextidx int) {
 	navpoint = `
 	<navPoint id="id%v" playOrder="%v">
@@ -297,6 +346,11 @@ func (this *Converter) generateContentOpf() (err error) {
 		spineArr = append(spineArr, `<itemref idref="titlepage"/>`)
 	}
 
+	if _, err := os.Stat(this.BasePath + "/summary.html"); err == nil {
+		spineArr = append(spineArr, `<itemref idref="summary"/>`) //目录
+
+	}
+
 	//扫描所有文件
 	if files, err := filetil.ScanFiles(this.BasePath); err == nil {
 		basePath := strings.Replace(this.BasePath, "\\", "/", -1)
@@ -306,8 +360,10 @@ func (this *Converter) generateContentOpf() (err error) {
 				sourcefile := strings.TrimPrefix(file.Path, basePath+"/")
 				id := "ncx"
 				if ext != ".ncx" {
-					if file.Name == "titlepage.xhtml" {
+					if file.Name == "titlepage.xhtml" { //封面
 						id = "titlepage"
+					} else if file.Name == "summary.html" { //目录
+						id = "summary"
 					} else {
 						id = cryptil.Md5Crypt(sourcefile)
 					}
@@ -334,7 +390,7 @@ func (this *Converter) generateContentOpf() (err error) {
 		return err
 	}
 
-	pkg := `<?xml version='1.0' encoding='utf-8'?>
+	pkg := `<?xml version='1.0' encoding='` + this.Config.Charset + `'?>
 		<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
 		  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata">
 			%v
@@ -362,6 +418,7 @@ func (this *Converter) convertToEpub() (err error) {
 		this.BasePath + "/" + output + "/book.epub",
 	}
 	cmd := exec.Command(ebookConvert, args...)
+
 	if this.Debug {
 		fmt.Println(cmd.Args)
 	}
