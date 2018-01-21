@@ -1,1 +1,138 @@
-{"charset":"utf-8","cover":"","date":"2018-01-21","description":"Gogs 的目标是打造一个最简单、最快速和最轻松的方式搭建自助 Git 服务。使用 Go 语言开发使得 Gogs 能够通过独立的二进制分发，并且支持 Go 语言支持的 所有平台，包括 Linux、Mac OS X、Windows 以及 ARM 平台。","footer":"\u003cp style='color:#8E8E8E;font-size:12px;'\u003e本文档使用 \u003ca href='http://www.bookstack.cn' style='text-decoration:none;color:#1abc9c;font-weight:bold;'\u003e书栈(BookStack.CN)\u003c/a\u003e 构建 \u003cspan style='float:right'\u003e- _PAGENUM_ -\u003c/span\u003e\u003c/p\u003e","header":"\u003cp style='color:#8E8E8E;font-size:12px;'\u003e_SECTION_\u003c/p\u003e","identifier":"","language":"zh-CN","creator":"书栈(BookStack.CN)","publisher":"书栈(BookStack.CN)","contributor":"书栈(BookStack.CN)","title":"Gogs中文文档","format":["epub","mobi","pdf"],"font_size":"14","paper_size":"a4","margin_left":"","margin_right":"","margin_top":"","margin_bottom":"","more":["--pdf-page-margin-bottom","72","--pdf-page-margin-left","72","--pdf-page-margin-right","72","--pdf-page-margin-top","72"],"toc":[{"id":709800000,"link":"statement.html","pid":0,"title":"致谢"},{"id":539,"link":"539.html","pid":538,"title":"5.1 配置文件手册"},{"id":545,"link":"545.html","pid":543,"title":"4.1 自定义模板"},{"id":549,"link":"549.html","pid":548,"title":"2.1 注册 Windows 服务"},{"id":554,"link":"554.html","pid":0,"title":"1. 简介"},{"id":555,"link":"555.html","pid":554,"title":"1.1 变更日志"},{"id":540,"link":"540.html","pid":538,"title":"5.2 公告与高阶指南"},{"id":547,"link":"547.html","pid":543,"title":"4.2 Web 钩子"},{"id":548,"link":"548.html","pid":0,"title":"2. 下载安装"},{"id":556,"link":"556.html","pid":554,"title":"1.2 常见问题"},{"id":559,"link":"559.html","pid":558,"title":"3.1 二进制升级"},{"id":546,"link":"546.html","pid":543,"title":"4.3 多国语言支持"},{"id":550,"link":"550.html","pid":548,"title":"2.2 配置与运行"},{"id":557,"link":"557.html","pid":554,"title":"1.3 故障排查"},{"id":558,"link":"558.html","pid":0,"title":"3. 版本升级"},{"id":560,"link":"560.html","pid":558,"title":"3.2 源码升级"},{"id":543,"link":"543.html","pid":0,"title":"4. 功能介绍"},{"id":544,"link":"544.html","pid":543,"title":"4.4 授权认证"},{"id":551,"link":"551.html","pid":548,"title":"2.3 二进制安装"},{"id":538,"link":"538.html","pid":0,"title":"5. 高级用法"},{"id":552,"link":"552.html","pid":548,"title":"2.4 包管理安装"},{"id":542,"link":"542.html","pid":0,"title":"6. 捐赠我们"},{"id":553,"link":"553.html","pid":548,"title":"2.5 源码安装"}]}
+{
+  "charset": "utf-8",
+  "cover": "",
+  "date": "2018-01-21",
+  "description": "Gogs 的目标是打造一个最简单、最快速和最轻松的方式搭建自助 Git 服务。使用 Go 语言开发使得 Gogs 能够通过独立的二进制分发，并且支持 Go 语言支持的 所有平台，包括 Linux、Mac OS X、Windows 以及 ARM 平台。",
+  "footer": "<p style='color:#8E8E8E;font-size:12px;'>本文档使用 <a href='http://www.bookstack.cn' style='text-decoration:none;color:#1abc9c;font-weight:bold;'>书栈(BookStack.CN)</a> 构建 <span style='float:right'>- _PAGENUM_ -</span></p>",
+  "header": "<p style='color:#8E8E8E;font-size:12px;'>_SECTION_</p>",
+  "identifier": "",
+  "language": "zh-CN",
+  "creator": "书栈(BookStack.CN)",
+  "publisher": "书栈(BookStack.CN)",
+  "contributor": "书栈(BookStack.CN)",
+  "title": "Gogs中文文档",
+  "format": ["epub", "mobi", "pdf"],
+  "font_size": "14",
+  "paper_size": "a4",
+  "margin_left": "72",
+  "margin_right": "72",
+  "margin_top": "72",
+  "margin_bottom": "72",
+  "more": [],
+  "toc": [{
+    "id": 709800000,
+    "link": "statement.html",
+    "pid": 0,
+    "title": "致谢"
+  }, {
+    "id": 539,
+    "link": "539.html",
+    "pid": 538,
+    "title": "5.1 配置文件手册"
+  }, {
+    "id": 545,
+    "link": "545.html",
+    "pid": 543,
+    "title": "4.1 自定义模板"
+  }, {
+    "id": 549,
+    "link": "549.html",
+    "pid": 548,
+    "title": "2.1 注册 Windows 服务"
+  }, {
+    "id": 554,
+    "link": "554.html",
+    "pid": 0,
+    "title": "1. 简介"
+  }, {
+    "id": 555,
+    "link": "555.html",
+    "pid": 554,
+    "title": "1.1 变更日志"
+  }, {
+    "id": 540,
+    "link": "540.html",
+    "pid": 538,
+    "title": "5.2 公告与高阶指南"
+  }, {
+    "id": 547,
+    "link": "547.html",
+    "pid": 543,
+    "title": "4.2 Web 钩子"
+  }, {
+    "id": 548,
+    "link": "548.html",
+    "pid": 0,
+    "title": "2. 下载安装"
+  }, {
+    "id": 556,
+    "link": "556.html",
+    "pid": 554,
+    "title": "1.2 常见问题"
+  }, {
+    "id": 559,
+    "link": "559.html",
+    "pid": 558,
+    "title": "3.1 二进制升级"
+  }, {
+    "id": 546,
+    "link": "546.html",
+    "pid": 543,
+    "title": "4.3 多国语言支持"
+  }, {
+    "id": 550,
+    "link": "550.html",
+    "pid": 548,
+    "title": "2.2 配置与运行"
+  }, {
+    "id": 557,
+    "link": "557.html",
+    "pid": 554,
+    "title": "1.3 故障排查"
+  }, {
+    "id": 558,
+    "link": "558.html",
+    "pid": 0,
+    "title": "3. 版本升级"
+  }, {
+    "id": 560,
+    "link": "560.html",
+    "pid": 558,
+    "title": "3.2 源码升级"
+  }, {
+    "id": 543,
+    "link": "543.html",
+    "pid": 0,
+    "title": "4. 功能介绍"
+  }, {
+    "id": 544,
+    "link": "544.html",
+    "pid": 543,
+    "title": "4.4 授权认证"
+  }, {
+    "id": 551,
+    "link": "551.html",
+    "pid": 548,
+    "title": "2.3 二进制安装"
+  }, {
+    "id": 538,
+    "link": "538.html",
+    "pid": 0,
+    "title": "5. 高级用法"
+  }, {
+    "id": 552,
+    "link": "552.html",
+    "pid": 548,
+    "title": "2.4 包管理安装"
+  }, {
+    "id": 542,
+    "link": "542.html",
+    "pid": 0,
+    "title": "6. 捐赠我们"
+  }, {
+    "id": 553,
+    "link": "553.html",
+    "pid": 548,
+    "title": "2.5 源码安装"
+  }]
+}

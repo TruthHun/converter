@@ -4,15 +4,19 @@
 
 ## 安装calibre
 - 下载地址：https://calibre-ebook.com/download
-- 根据自己的系统安装对应的calibre（需要注意的是，calibre要安装3.x版本的，2.x版本的功能不是很强大。反正安装最新的准没错。）
+- 根据自己的系统安装对应的calibre（需要注意的是，calibre要安装3.x版本的，2.x版本的功能不是很强大。反正安装最新的就好。）
 - 安装完calibre之后，将calibre加入到系统的path中，执行下面的命令之后显示3.x的版本即表示安装成功。
 ```
 ebook-convert --version
 ```
-## 使用示例
 
+## 使用案例
+- 掘金量化 https://www.myquant.cn (这是我们公司的官网，做量化投资的。戳进去，"帮助中心"里面可以看到文档导出效果)
+- 书栈(BookStack) https://www.bookstack.cn (这是我基于MinDoc做的二次开发的站点，文档导出效果也可以到这个站点查看。附MinDoc项目地址：https://github.com/lifei6671/mindoc)
 
 ## 配置文件
+以json作为配置文件，配置文件的文件名不限制，在使用的时候指定一下配置文件的文件名即可。
+需要注意的是，json配置文件需要放在项目的根目录下。比如示例项目，`example/gogz_zh`中，配置文件`config.json`就是放在项目的根目录
 
 ### json配置示例
 ```json
@@ -32,11 +36,11 @@ ebook-convert --version
 	"format": ["epub", "mobi", "pdf"],
 	"font_size": "14",
 	"paper_size": "a4",
-	"margin_left": "",
-	"margin_right": "",
-	"margin_top": "",
-	"margin_bottom": "",
-	"more": ["--pdf-page-margin-bottom", "72", "--pdf-page-margin-left", "72", "--pdf-page-margin-right", "72", "--pdf-page-margin-top", "72"],
+	"margin_left": "72",
+	"margin_right": "72",
+	"margin_top": "72",
+	"margin_bottom": "72",
+	"more": [],
 	"toc": [{
 		"id": 709800000,
 		"link": "statement.html",
@@ -155,11 +159,69 @@ ebook-convert --version
 	}]
 }
 ```
+### json配置项说明
+- `charset` 指定字符集，留空则默认为utf-8编码。选填。
+- `cover` 封面图片，一张`800x1068`像素或该尺寸比例的图片，jpg、png或gif格式。如果没有封面，请置空。选填。
+- `date` 文档生成日期，年月日时分秒都可以。默认当前日期时间。选填。
+- `title`  文档标题。必填。
+- `description` 文档描述、摘要。选填。
+- `footer`、`header` 生成PDF文档时，文档的底部(footer)和顶部(header)内容，仅对PDF文档有效。选填。
+- `identifier` 出版物的标识。留空即可。
+- `language`    语言。必填。可选值：zh、en、zh-CN、en-US等。
+- `creator`、`publisher`、`contributor`   如果你懒的话，三个都传同一个值，比如示例中的"书栈(BookStack.CN)"。如果真要区分的话，`creator`就是文档作者，比如"进击的皇虫"，`publisher`、`contributor`理解为出版单位和构建人。三个配置项，建议填写。
+- `format`  导出的文档格式，不传值则默认导出PDF。可选值：epub、pdf、mobi。
+- `font_size` 数字，默认字体大小，仅对导出PDF有效。选填。
+- `paper_size` 导出文档的页面大小，不区分大小写。默认"A4"，选填。可选值： `a0`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `b0`, `b1`, `b2`, `b3`, `b4`,`b5`, `b6`, `legal`, `letter`
+- `margin_left`、`margin_right`、`margin_top`、`margin_bottom`  数字，左边距、右边距、上边距、下边距，仅对PDF文档有效。选填，默认72，即表示72pt。
+- `more`    更多选项。仅对PDF有效。不建议使用。
+- `toc` 重要！！！这个是重中之重，用于生成文档目录的。`id`、`pid`是数字，`pid`表示上级的id。id的值不能重复。`link`表示html链接文件。toc里面的`title`表示目录章节标题。
 
-### json配置说明
-1.  如果封面cover配置项为图片，则程序自动生成titlepage.xhtml文件；如果封面cover为html或者xhtml，则不会生成titlepage.xhtml.在处理的时候，判断cover前后是否相同再决定文件的删减
-1.  文件名，统一用book.pdf、book.epub等标识
+(参照示例的`config.json`去配置就好。)
 
-## 使用案例
+## 使用教程
+bin目录下的是当前程序生成的64位的二进制可执行文件。Windows下使用示例：
+```
+converter.exe path/to/config.json
+```
+执行成功之后，会自动在项目目录下创建个`output`文件夹，并将文件导出到里面。比如导出pdf格式，则会在`output`文件夹下面出现`book.pdf`文件。
+### Go语言使用
+引入当前包：
+`github.com/TruthHun/converter/converter`
+```golang
+if Convert, err:= converter.NewConverter("path/to/config.json");err==nil{
+    Convert.Convert()
+}
+```
+### 其它语言
+由于目前没封装PHP、Python等的类和包，所以其它语言要使用的话，就是在项目下生成一个config.json(名字随便自己定义)，然后调用各自语言的cmd执行：
+```
+/path/to/converter /path/to/config.json
+```
+
+## 原理
+HTML导出PDF、epub等文档的原理很简单：根据config.json中的内容，生成epub电子书的基本结构，然后将当前目录下的文件压缩并重命名如`content.epub`，然后再使用`ebook-convert`进行转换，转换命令：
+```
+ebook-convert content.epub output/book.pdf [options]
+```
+这样，你就可以使用自己熟悉的语言封装一个包，并调用calibre导出文档了。
+
+
+## 注意事项
+- HTML中不要有使用js代码渲染的文档内容，因为js是不会被执行的
 
 ## 精神上支持我
+虽然我很缺钱...
+但是得到他人的肯定和认可比什么都重要。
+如果当前项目帮到了你，请给项目一个star，以鼓励我在开源的路上能走的更好、更远。
+附自己业余时间搞的一些站点，支持我，可以点击访问一下：
+- HC-CMS  http://www.hc-cms.com
+- IT文库  http://wenku.it
+- 书栈(BookStack) http://www.bookstack.cn
+
+
+## markdown文档如何转成pdf、epub、mobi
+说实话，这个我没仔细去研究过。思路就是将markdown文档转成HTML，然后再通过当前工具再转成PDF文档等。网上应该有更好的方法，如果大家找到了，麻烦大家分享一下。
+
+## 关于作者
+一个将近有4年后端开发经验的前端攻城狮
+
