@@ -1,3 +1,6 @@
+//Author:TruthHun
+//Email:TruthHun@QQ.COM
+//Date:2018-01-21
 package converter
 
 import (

@@ -5,10 +5,26 @@
 ## 安装calibre
 - 下载地址：https://calibre-ebook.com/download
 - 根据自己的系统安装对应的calibre（需要注意的是，calibre要安装3.x版本的，2.x版本的功能不是很强大。反正安装最新的就好。）
-- 安装完calibre之后，将calibre加入到系统的path中，执行下面的命令之后显示3.x的版本即表示安装成功。
+- 安装完calibre之后，将calibre加入到系统环境变量中，执行下面的命令之后显示3.x的版本即表示安装成功。
 ```
 ebook-convert --version
 ```
+
+## 快速体验
+如果成功安装了calibre，并配置了环境变量，则可以按照下面的方式进行快速体验。(bin目录下是各系统64位的二进制可执行程序，限64位系统)
+- Windows用户，进入`bin/win`目录，执行命令：
+```
+./converter.exe ../../example/gogs_zh/config.json
+```
+- Mac用户，进入`bin/mac`目录，执行命令：
+```
+./converter ../../example/gogs_zh/config.json
+```
+- Linux用户，进入`bin/linux`目录，执行命令：
+```
+./converter ../../example/gogs_zh/config.json
+```
+执行成功之后，在`example/gogs_zh/output`下可以看到导出的文档
 
 ## 使用案例
 - 掘金量化 https://www.myquant.cn (这是我们公司的官网，做量化投资的。戳进去，"帮助中心"里面可以看到文档导出效果)
@@ -207,7 +223,7 @@ ebook-convert content.epub output/book.pdf [options]
 
 
 ## 注意事项
-- HTML中不要有使用js代码渲染的文档内容，因为js是不会被执行的
+- HTML中不要有使用js代码渲染文档内容，因为js是不会被执行的
 
 ## 精神上支持我
 虽然我很缺钱...
@@ -220,8 +236,7 @@ ebook-convert content.epub output/book.pdf [options]
 
 
 ## markdown文档如何转成pdf、epub、mobi
-说实话，这个我没仔细去研究过。思路就是将markdown文档转成HTML，然后再通过当前工具再转成PDF文档等。网上应该有更好的方法，如果大家找到了，麻烦大家分享一下。
+说实话，这个我没仔细去研究过。思路就是将markdown文档转成HTML，然后再通过当前工具再转成PDF文档等。网上应该有更好的方法，如果大家找到了，麻烦也分享一下。
 
-## 关于作者
-一个将近有4年后端开发经验的前端攻城狮
+
 
