@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Go template
 # Binaries for programs and plugins
-*.exe
+#*.exe
 *.dll
 *.so
 *.dylib
@@ -90,4 +90,4 @@ $RECYCLE.BIN/
 
 .gitignore
 .idea/
-example/gogs_zh/output
+#example/gogs_zh/output
