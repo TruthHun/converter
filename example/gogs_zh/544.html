@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">4.4 授权认证</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#授权认证" level="1">授权认证</a><ul><li><a class="toc-level-2" href="#LDAP" level="2">LDAP</a></li><li><a class="toc-level-2" href="#PAM" level="2">PAM</a></li><li><a class="toc-level-2" href="#SMTP" level="2">SMTP</a></li><li><a class="toc-level-2" href="#Freeipa" level="2">Freeipa</a><ul></ul></li></ul></li></ul></div><h1 id="h1-u6388u6743u8BA4u8BC1"><a name="授权认证" class="reference-link"></a><span class="header-link octicon octicon-link"></span>授权认证</h1><h2 id="h2-ldap"><a name="LDAP" class="reference-link"></a><span class="header-link octicon octicon-link"></span>LDAP</h2><p>基于 BindDN 和 simple auth 的 LDAP 授权方式共享以下字段：</p>
+<ul>
+<li><p>认证名称 <strong>（必填）</strong></p>
+<ul>
+<li>A name to assign to the new method of authorization.</li></ul>
+</li><li><p>主机地址 <strong>（必填）</strong></p>
+<ul>
+<li>The address where the LDAP server can be reached.</li><li>Example: <code>mydomain.com</code></li></ul>
+</li><li><p>主机端口 <strong>（必填）</strong></p>
+<ul>
+<li>The port to use when connecting to the server.</li><li>Example: <code>636</code></li></ul>
+</li><li><p>启用 TLS 加密（可选）</p>
+<ul>
+<li>Whether to use TLS when connecting to the LDAP server.</li></ul>
+</li><li><p>管理员过滤规则（可选）</p>
+<ul>
+<li>An LDAP filter specifying if a user should be given administrator<br/>privileges. If a user accounts passes the filter, the user will be<br/>privileged as an administrator.</li><li>Example: <code>(objectClass=adminAccount)</code></li></ul>
+</li></ul>
+<ul>
+<li>用户名属性（可选）<ul>
+<li>The attribute of the user’s LDAP record containing the user name. Given<br/>attribute value will be used for new Gogs account user name after first<br/>successful sign-in. Leave empty to use login name given on sign-in form.</li><li>This is useful when supplied login name is matched against multiple<br/>attributes, but only single specific attribute should be used for Gogs<br/>account name, see “User Filter”.</li><li>例如：<code>uid</code></li></ul>
+</li></ul>
+<ul>
+<li><p>名字属性（可选）</p>
+<ul>
+<li>The attribute of the user’s LDAP record containing the user’s first name.<br/>This will be used to populate their account information.</li><li>Example: <code>givenName</code></li></ul>
+</li><li><p>姓氏属性（可选）</p>
+<ul>
+<li>The attribute of the user’s LDAP record containing the user’s surname This<br/>will be used to populate their account information.</li><li>Example: <code>sn</code></li></ul>
+</li><li><p>邮箱属性 <strong>（必填）</strong></p>
+<ul>
+<li>The attribute of the user’s LDAP record containing the user’s email<br/>address. This will be used to populate their account information.</li><li>Example: mail</li></ul>
+</li></ul>
+<p><strong>基于 BindDN</strong> 需要填充以下字段：</p>
+<ul>
+<li><p>绑定 DN（可选）</p>
+<ul>
+<li>The DN to bind to the LDAP server with when searching for the user. This<br/>may be left blank to perform an anonymous search.</li><li>Example: cn=Search,dc=mydomain,dc=com</li></ul>
+</li><li><p>绑定密码（可选）</p>
+<ul>
+<li>The password for the Bind DN specified above, if any. <em>Note: The password<br/>is stored in plaintext at the server. As such, ensure that your Bind DN<br/>has as few privileges as possible.</em></li></ul>
+</li><li><p>用户搜索基准 <strong>（必填）</strong></p>
+<ul>
+<li>The LDAP base at which user accounts will be searched for.</li><li>Example: ou=Users,dc=mydomain,dc=com</li></ul>
+</li><li><p>用户过滤规则 <strong>（必填）</strong></p>
+<ul>
+<li>An LDAP filter declaring how to find the user record that is attempting to<br/>authenticate. The <code>%s</code> matching parameter will be substituted with login<br/>name given on sign-in form.</li><li>Example: <code>(&amp;(objectClass=posixAccount)(uid=%s))</code></li><li>To substitute more than once <code>%[1]s</code> should be used instead, eg. when<br/>matching supplied login name against multiple attributes such as user<br/>identifier, email or even phone number.</li><li>Example: <code>(&amp;(objectClass=Person)(|(uid=%[1]s)(mail=%[1]s)(mobile=%[1]s)))</code></li></ul>
+</li></ul>
+<p><strong>基于 simple auth</strong> 需要填充以下字段：</p>
+<ul>
+<li><p>User DN <strong>（必填）</strong></p>
+<ul>
+<li>A template to use as the user’s DN. The <code>%s</code> matching parameter will be substituted with login name given on sign-in form.</li><li>Example: <code>cn=%s,ou=Users,dc=mydomain,dc=com</code></li><li>Example: <code>uid=%s,ou=Users,dc=mydomain,dc=com</code></li></ul>
+</li><li><p>用户过滤规则 <strong>（必填）</strong></p>
+<ul>
+<li>An LDAP filter declaring when a user should be allowed to log in. The <code>%s</code><br/>matching parameter will be substituted with login name given on sign-in<br/>form.</li><li>Example: <code>(&amp;(objectClass=posixAccount)(cn=%s))</code></li><li>Example: <code>(&amp;(objectClass=posixAccount)(uid=%s))</code></li></ul>
+</li></ul>
+<p><strong>验证组成员</strong> 需要填充以下字段：</p>
+<ul>
+<li><p>组搜索基准 DN（可选）</p>
+<ul>
+<li>The LDAP DN used for groups.</li><li>Example: <code>ou=group,dc=mydomain,dc=com</code></li></ul>
+</li><li><p>组名称过滤（可选）</p>
+<ul>
+<li>An LDAP filter declaring how to find valid groups in the above DN.</li><li>Example: <code>(|(cn=gogs_users)(cn=admins))</code></li></ul>
+</li><li><p>包含用户的组属性（可选）</p>
+<ul>
+<li>Which group LDAP attribute contains an array above user attribute names.</li><li>Example: <code>memberUID</code></li></ul>
+</li><li><p>组内用户属性（可选）</p>
+<ul>
+<li>Which user LDAP attribute is listed in the group.</li><li>Example: <code>uid</code></li></ul>
+</li></ul>
+<h2 id="h2-pam"><a name="PAM" class="reference-link"></a><span class="header-link octicon octicon-link"></span>PAM</h2><p>To configure this you just need to set the ‘PAM Service Name’ to a filename in <code>/etc/pam.d/</code>.<br/>If you want it to work with normal Linux passwords, the user running Gogs must have read access to <code>/etc/shadow</code>.</p>
+<h2 id="h2-smtp"><a name="SMTP" class="reference-link"></a><span class="header-link octicon octicon-link"></span>SMTP</h2><p>Gogs 支持通过指定邮箱服务器来对用户进行创建和认证，可以通过配置以下选项启用该功能：</p>
+<ul>
+<li><p>认证名称 <strong>（必填）</strong></p>
+<ul>
+<li>A name to assign to the new method of authorization.</li></ul>
+</li><li><p>SMTP 认证类型 <strong>（必填）</strong></p>
+<ul>
+<li>Type of authentication for use on your SMTP host, PLAIN or LOGIN.</li></ul>
+</li><li><p>主机地址 <strong>（必填）</strong></p>
+<ul>
+<li>The address where the SMTP host can be reached.</li><li>Example: <code>smtp.mydomain.com</code></li></ul>
+</li><li><p>端口号 <strong>（必填）</strong></p>
+<ul>
+<li>The port to use when connecting to the server.</li><li>Example: <code>587</code></li></ul>
+</li><li><p>域名白名单</p>
+<ul>
+<li>Restrict what domains can log in if you’re using public SMTP host or SMTP host with multiple domains.</li><li>Example: <code>gogs.io,mydomain.com,mydomain2.com</code></li></ul>
+</li><li><p>启用 TLS 加密</p>
+<ul>
+<li>Enable TLS encryption on authentication.</li></ul>
+</li><li><p>忽略 TLS 验证</p>
+<ul>
+<li>Disable TLS verify on authentication.</li></ul>
+</li><li><p>This authentication is activate</p>
+<ul>
+<li>Enable or disable this auth.</li></ul>
+</li></ul>
+<h2 id="h2-freeipa"><a name="Freeipa" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Freeipa</h2><ul>
+<li><p>In order to login to the Gogs using FreeIPA credentials, you need to create a bind account for Gogs to use:</p>
+</li><li><p>On the FreeIPA server, create a <code>gogs.ldif</code> file, replacing dc=example,dc=com with your DN, and providing an appropriately secure password:</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pln">dn</span><span class="pun">:</span><span class="pln"> uid</span><span class="pun">=</span><span class="pln">gogs</span><span class="pun">,</span><span class="pln">cn</span><span class="pun">=</span><span class="pln">sysaccounts</span><span class="pun">,</span><span class="pln">cn</span><span class="pun">=</span><span class="pln">etc</span><span class="pun">,</span><span class="pln">dc</span><span class="pun">=</span><span class="pln">example</span><span class="pun">,</span><span class="pln">dc</span><span class="pun">=</span><span class="pln">com</span></code></li><li class="L1"><code><span class="pln">changetype</span><span class="pun">:</span><span class="pln"> add</span></code></li><li class="L2"><code><span class="pln">objectclass</span><span class="pun">:</span><span class="pln"> account</span></code></li><li class="L3"><code><span class="pln">objectclass</span><span class="pun">:</span><span class="pln"> simplesecurityobject</span></code></li><li class="L4"><code><span class="pln">uid</span><span class="pun">:</span><span class="pln"> gogs</span></code></li><li class="L5"><code><span class="pln">userPassword</span><span class="pun">:</span><span class="pln"> secure password</span></code></li><li class="L6"><code><span class="pln">passwordExpirationTime</span><span class="pun">:</span><span class="pln"> </span><span class="lit">20380119031407Z</span></code></li><li class="L7"><code><span class="pln">nsIdleTimeout</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span></code></li></ol></pre></li><li><p>Import the LDIF (change localhost to an IPA server if needed), you’ll be prompted for your Directory Manager password:</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pln">ldapmodify </span><span class="pun">-</span><span class="pln">h localhost </span><span class="pun">-</span><span class="pln">p </span><span class="lit">389</span><span class="pln"> </span><span class="pun">-</span><span class="pln">x </span><span class="pun">-</span><span class="pln">D \</span></code></li><li class="L1"><code><span class="str">&#34;cn=Directory Manager&#34;</span><span class="pln"> </span><span class="pun">-</span><span class="pln">W </span><span class="pun">-</span><span class="pln">f gogs</span><span class="pun">.</span><span class="pln">ldif</span></code></li></ol></pre></li><li>Add an IPA group for gogs_users :<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pln">ipa </span><span class="kwd">group</span><span class="pun">-</span><span class="pln">add </span><span class="pun">--</span><span class="pln">desc</span><span class="pun">=</span><span class="str">&#34;Gogs Users&#34;</span><span class="pln"> gogs_users</span></code></li></ol></pre></li><li><p>Note! if you get error about ipa credentials please run kinit admin and give your admin accound password.</p>
+</li><li><p>Now login to the gogs as an Admin, click on “Authentication” under Admin Panel. Then click New LDAP Source and fill in the details, changing all where appropriate to your own domain as photo below:</p>
+</li></ul>
+<p><img src="07fbf67d05c29c0bca39917e2baee1b0.png" alt="Freeipa-Gogs"/></p>
+
+    </div>
+</body>
+</html>

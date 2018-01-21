@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">1.3 故障排查</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#故障排查" level="1">故障排查</a><ul><li><a class="toc-level-2" href="#安装" level="2">安装</a></li><li><a class="toc-level-2" href="#SSH" level="2">SSH</a><ul><li><a class="toc-level-4" href="#SSH 链接挂起 60 秒" level="4">SSH 链接挂起 60 秒</a></li><li><a class="toc-level-4" href="#Update 钩子指向错误的二进制路径" level="4">Update 钩子指向错误的二进制路径</a></li><li><a class="toc-level-4" href="#推送成功但控制面板没有活动更新" level="4">推送成功但控制面板没有活动更新</a><ul><li><a class="toc-level-5" href="#可能原因" level="5">可能原因</a></li><li><a class="toc-level-5" href="#解决方案" level="5">解决方案</a></li></ul></li></ul></li></ul></li><li><a class="toc-level-2" href="#Git" level="2">Git</a><ul><li><a class="toc-level-4" href="#公钥使用冲突" level="4">公钥使用冲突</a></li><li><a class="toc-level-4" href="#Gogs 无法调用 ‘git’ 命令" level="4">Gogs 无法调用 ‘git’ 命令</a></li></ul></li><li><a class="toc-level-2" href="#Cache" level="2">Cache</a></li><li><a class="toc-level-2" href="#数据库" level="2">数据库</a><ul><li><a class="toc-level-4" href="#使用错误的 MySQL 存储引擎" level="4">使用错误的 MySQL 存储引擎</a></li><li><a class="toc-level-4" href="#过时的 MySQL 密码设置" level="4">过时的 MySQL 密码设置</a></li><li><a class="toc-level-4" href="#连接到错误的 SQLite3 数据库" level="4">连接到错误的 SQLite3 数据库</a></li></ul></li><li><a class="toc-level-2" href="#邮件服务" level="2">邮件服务</a></li><li><a class="toc-level-2" href="#Windows" level="2">Windows</a></li><li><a class="toc-level-2" href="#其它" level="2">其它</a><ul></ul></li></ul></div><h1 id="h1-u6545u969Cu6392u67E5"><a name="故障排查" class="reference-link"></a><span class="header-link octicon octicon-link"></span>故障排查</h1><h2 id="h2-u5B89u88C5"><a name="安装" class="reference-link"></a><span class="header-link octicon octicon-link"></span>安装</h2><ul>
+<li>错误描述：<code>../gosrc/src/github.com/gogits/gogs/cmd/cert.go:79: undefined: elliptic.P224</code></li><li>可能原因：Go 语言的 RHEL/CentOS 官方发行版中因专利问题移除了相关加密算法的代码</li><li>解决方案：从 <a href="http://golang.org/dl">golang.org/dl</a> 下载安装 Go 语言</li></ul>
+<h2 id="h2-ssh"><a name="SSH" class="reference-link"></a><span class="header-link octicon octicon-link"></span>SSH</h2><h4 id="h4-ssh-60-"><a name="SSH 链接挂起 60 秒" class="reference-link"></a><span class="header-link octicon octicon-link"></span>SSH 链接挂起 60 秒</h4><ul>
+<li>可能原因：Gogs 会在每次 SSH Push 完成之后请求自身的 Web 服务，您的防火墙或服务器提供商未允许该操作</li></ul>
+<h4 id="h4-update-"><a name="Update 钩子指向错误的二进制路径" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Update 钩子指向错误的二进制路径</h4><ul>
+<li>可能原因：您升级 Gogs 后将其移动到了和之前安装位置不同的目录</li><li>解决方案：到管理员控制面板（<code>/admin</code>）执行以下操作：<ul>
+<li><code>重新生成 &#39;.ssh/authorized_keys&#39; 文件</code></li><li><code>重新同步所有仓库的 pre-receive、update 和 post-receive 钩子</code></li></ul>
+</li></ul>
+<h4 id="h4-u63A8u9001u6210u529Fu4F46u63A7u5236u9762u677Fu6CA1u6709u6D3Bu52A8u66F4u65B0"><a name="推送成功但控制面板没有活动更新" class="reference-link"></a><span class="header-link octicon octicon-link"></span>推送成功但控制面板没有活动更新</h4><h5 id="h5-u53EFu80FDu539Fu56E0"><a name="可能原因" class="reference-link"></a><span class="header-link octicon octicon-link"></span>可能原因</h5><p>在使用 SSH 推送时，Gogs 依赖通过执行钩子脚本（Hook Script）来更新仓库和最近活动。但出于某种原因，执行脚本的权限被拒绝了，尤其是在使用挂载（Mount）设备时。</p>
+<h5 id="h5-u89E3u51B3u65B9u6848"><a name="解决方案" class="reference-link"></a><span class="header-link octicon octicon-link"></span>解决方案</h5><ul>
+<li>请确保挂载设备时没有启用 <code>noexec</code> 选项，必要时需要明确指定 <code>exec</code> 选项。</li><li>如果使用 <code>vfat</code>（或者 <code>cifs</code>）类型的挂载，请确保 <code>uid</code>、<code>gid</code> 和 <code>fmask</code> 选项允许运行 Gogs 的用户在挂载设备上执行脚本。</li><li>如果使用网络类型的挂载，请确保服务器（NFS 或 Samba）没有禁止远程文件系统的执行脚本权限。</li></ul>
+<h2 id="h2-git"><a name="Git" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Git</h2><h4 id="h4-u516Cu94A5u4F7Fu7528u51B2u7A81"><a name="公钥使用冲突" class="reference-link"></a><span class="header-link octicon octicon-link"></span>公钥使用冲突</h4><ul>
+<li>错误描述：<ul>
+<li><code>fatal: &#39;XX/XX.git&#39; does not appear to be a git repository</code></li><li>推送代码提交后依旧显示为空仓库</li></ul>
+</li><li>可能原因：<code>~/.ssh/authorized_keys</code> 文件中存在重复的 SSH 密钥，可能是由于您曾经或正在通过同一个系统用户使用 GitLab。</li><li>解决方案：删除除了属于 Gogs 自动添加以外的所有密钥。</li></ul>
+<h4 id="h4-gogs-git-"><a name="Gogs 无法调用 ‘git’ 命令" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Gogs 无法调用 ‘git’ 命令</h4><ul>
+<li>错误描述：<code>repo.NewRepoContext(fail to set git user.email):</code></li><li>可能原因：该错误会发生在 Windows 安装 Git Bash 时未启用 <code>cmd</code> 选项。</li><li>解决方案：重装并启用 <code>cmd</code> 选项。</li></ul>
+<h2 id="h2-cache"><a name="Cache" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cache</h2><ul>
+<li>错误描述：<code>cache: unknown adaptername &#34;memcache&#34; (forgotten import?)</code></li><li>可能原因：为了减少不必要的导入，您需要使用构建 tags 来启用某个缓存适配器。</li><li>解决方案：<ul>
+<li>下载：<code>go get -tags memcache github.com/gogits/gogs</code></li><li>构建：<code>go build -tags memcache</code></li><li>如果要启用 <code>redis</code> 也是一样的步骤。</li></ul>
+</li></ul>
+<h2 id="h2-u6570u636Eu5E93"><a name="数据库" class="reference-link"></a><span class="header-link octicon octicon-link"></span>数据库</h2><h4 id="h4--mysql-"><a name="使用错误的 MySQL 存储引擎" class="reference-link"></a><span class="header-link octicon octicon-link"></span>使用错误的 MySQL 存储引擎</h4><ul>
+<li>错误描述：<code>Error 1071: Specified key was too long; max key length is 1000 bytes</code></li><li>可能原因：这是由于数据库引擎为 MyISAM 导致的。</li><li><p>解决方案：在使用 <code>config/mysql.sql</code> 创建完数据库后，进入数据库然后执行：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-sql"><span class="pln">  </span><span class="kwd">use</span><span class="pln"> gogs</span><span class="pun">;</span></code></li><li class="L1"><code class="lang-sql"><span class="pln">  </span><span class="kwd">set</span><span class="pln"> </span><span class="kwd">global</span><span class="pln"> storage_engine</span><span class="pun">=</span><span class="pln">INNODB</span><span class="pun">;</span></code></li></ol></pre>
+</li></ul>
+<p>最后，访问 <a href="http://localhost:3000/install">http://localhost:3000/install</a> 即可（感谢 <a href="https://github.com/linc01n" "="">@linc01n</a>）。</p>
+<h4 id="h4--mysql-"><a name="过时的 MySQL 密码设置" class="reference-link"></a><span class="header-link octicon octicon-link"></span>过时的 MySQL 密码设置</h4><ul>
+<li>错误描述：<code>Database setting is not correct: This server only supports the insecure old password authentication. If you still want to use it, please add &#39;allowOldPasswords=1&#39; to your DSN. See also https://github.com/go-sql-driver/mysql/wiki/old_passwords</code></li><li>可能原因：只更新了 <a href="https://github.com/localhost" title="@localhost" class="at-link">@localhost</a> 的密码，但 @% 用户依旧使用旧密码</li><li>解决方案：<a href="https://github.com/gogits/gogs/issues/385#issuecomment-54357073">GitHub 讨论</a></li></ul>
+<h4 id="h4--sqlite3-"><a name="连接到错误的 SQLite3 数据库" class="reference-link"></a><span class="header-link octicon octicon-link"></span>连接到错误的 SQLite3 数据库</h4><ul>
+<li>错误描述：推送仓库显示仓库所有者（Owner）未注册或 <code>user</code> 数据表不存在。</li><li>可能原因：您以服务形式启动 Gogs 的时候，Gogs 可能会使用和您预期所不同的 SQLite3 数据库文件。</li><li>解决方案：使用绝对路径配置 SQLite3 数据库文件路径。</li></ul>
+<h2 id="h2-u90AEu4EF6u670Du52A1"><a name="邮件服务" class="reference-link"></a><span class="header-link octicon octicon-link"></span>邮件服务</h2><ul>
+<li>错误描述：Gmail 发送返回 Error 534: <code>Please log in via your web browser and then try again</code></li><li>可能原因：这是因为 Google 不信任您的服务器导致的。</li><li>解决方案：<ul>
+<li>访问 <a href="https://accounts.google.com">https://accounts.google.com</a> 并登录。</li><li>访问 <a href="https://accounts.google.com/DisplayUnlockCaptcha">https://accounts.google.com/DisplayUnlockCaptcha</a> 单击 <code>continue</code>。</li><li>重试发送。</li></ul>
+</li></ul>
+<h2 id="h2-windows"><a name="Windows" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Windows</h2><ul>
+<li>错误描述：</li></ul>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="lit">2014</span><span class="pun">/</span><span class="lit">09</span><span class="pun">/</span><span class="lit">18</span><span class="pln"> </span><span class="lit">15</span><span class="pun">:</span><span class="lit">04</span><span class="pun">:</span><span class="lit">40</span><span class="pln"> </span><span class="pun">[</span><span class="pln">repo</span><span class="pun">.</span><span class="pln">go</span><span class="pun">:</span><span class="lit">115</span><span class="pln"> </span><span class="typ">CreatePost</span><span class="pun">()]</span><span class="pln"> </span><span class="pun">[</span><span class="pln">E</span><span class="pun">]</span><span class="pln"> </span><span class="typ">CreatePost</span><span class="pun">:</span><span class="pln"> initRepository</span><span class="pun">:</span><span class="pln"> initRepository</span><span class="pun">(</span><span class="pln">git clone</span><span class="pun">):</span><span class="pln"> cygwin warning</span><span class="pun">:</span></code></li><li class="L1"><code><span class="pln">MS</span><span class="pun">-</span><span class="pln">DOS style path detected</span><span class="pun">:</span><span class="pln"> C</span><span class="pun">:</span><span class="pln">\Users\user\gogs</span><span class="pun">-</span><span class="pln">repositories\unos\test3</span><span class="pun">.</span><span class="pln">git</span><span class="pun">/.</span><span class="pln">git</span></code></li><li class="L2"><code><span class="typ">Preferred</span><span class="pln"> POSIX equivalent </span><span class="kwd">is</span><span class="pun">:</span><span class="pln"> </span><span class="str">/cygdrive/</span><span class="pln">c</span><span class="pun">/</span><span class="typ">Users</span><span class="pun">/</span><span class="pln">user</span><span class="pun">/</span><span class="pln">gogs</span><span class="pun">-</span><span class="pln">repositories</span><span class="pun">/</span><span class="pln">unos</span><span class="pun">/</span><span class="pln">test3</span><span class="pun">.</span><span class="pln">git</span><span class="pun">/.</span><span class="pln">git</span></code></li><li class="L3"><code><span class="pln">CYGWIN environment variable option </span><span class="str">&#34;nodosfilewarning&#34;</span><span class="pln"> turns off </span><span class="kwd">this</span><span class="pln"> warning</span><span class="pun">.</span></code></li><li class="L4"><code><span class="typ">Consult</span><span class="pln"> the user</span><span class="str">&#39;s guide for more details about POSIX paths:</span></code></li><li class="L5"><code><span class="str">http://cygwin.com/cygwin-ug-net/using.html#using-pathnames</span></code></li><li class="L6"><code><span class="str">Cloning into &#39;</span><span class="pln">C</span><span class="pun">:</span><span class="pln">\Users\user\AppData\Local\Temp\4</span><span class="lit">84264900</span><span class="str">&#39;...</span></code></li><li class="L7"><code><span class="str">fatal: &#39;</span><span class="pun">/</span><span class="pln">cygdrive</span><span class="pun">/</span><span class="pln">d</span><span class="pun">/</span><span class="pln">svnroot</span><span class="pun">/</span><span class="pln">research</span><span class="pun">/</span><span class="pln">gogs</span><span class="pun">/</span><span class="pln">C</span><span class="pun">:</span><span class="pln">\Users\user\gogs</span><span class="pun">-</span><span class="pln">repositories\unos\test3</span><span class="pun">.</span><span class="pln">git</span><span class="str">&#39; does not appear to be a git repository</span></code></li><li class="L8"><code><span class="str">fatal: Could not read from remote repository.</span></code></li></ol></pre><ul>
+<li>可能原因：您在系统中安装了另一种命令行工具，并且与系统默认的 CMD 有不同路径风格。</li><li>解决方案：请您尝试用默认的 CMD 启动 Gogs。</li></ul>
+<hr/>
+<ul>
+<li>错误描述：<code>Resource interpreted as Stylesheet but transferred with MIME type application/x-css</code></li><li>可能原因：Windows 注册表中错误的值</li><li>解决方案：在注册表中找到 <code>HKEY_CLASSES_ROOT</code> 下的 <code>.css</code>，并将其 <code>Content Type</code> 的值修改为 <code>text/css</code>。</li></ul>
+<h2 id="h2-u5176u5B83"><a name="其它" class="reference-link"></a><span class="header-link octicon octicon-link"></span>其它</h2><ul>
+<li>错误描述：页面响应非常慢，但是显示在页面底部的时间正常（低于 100 毫秒）。</li><li>可能原因：这可能是由于 Nginx 尝试通过 IPv6 的方式解析 IPv4 的地址。</li><li>解决方案：显式的使用 <code>127.0.0.1</code> 作为主机名而不是 <code>localhost</code>。</li></ul>
+<hr/>
+<ul>
+<li>错误描述：<code>Error 1062: Duplicate entry &#39;Unknown-Mac&#39; for key &#39;UQE_public_key_name&#39;</code></li><li>可能原因：这是由于遗留代码导致的，<code>public_key</code> 表之前含有唯一索引 <code>UQE_public_key_name</code>。</li><li>解决方案：您只需删除它即可。</li></ul>
+<hr/>
+<ul>
+<li>错误描述：<code>GLIBC_2.14 not found</code></li><li>解决方案：尝试 <code>sudo apt-get -t testing install libc6-dev</code>。</li></ul>
+<hr/>
+<ul>
+<li>错误描述：<code>[Macaron] PANIC: session(start): mkdir data: permission denied</code></li><li>可能原因：Gogs 会在程序所在目录创建 <code>data</code> 子目录。</li><li>解决方案：确保 Gogs 具有在相同目录创建子目录的权限。</li></ul>
+
+    </div>
+</body>
+</html>

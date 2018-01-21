@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">3.2 源码升级</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#从源码升级" level="1">从源码升级</a><ul></ul></li></ul></div><h1 id="h1-u4ECEu6E90u7801u5347u7EA7"><a name="从源码升级" class="reference-link"></a><span class="header-link octicon octicon-link"></span>从源码升级</h1><p>升级 Gogs 的一般步骤：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="com"># 更新源码以及依赖</span></code></li><li class="L1"><code class="lang-bash"><span class="pln">$ go get </span><span class="pun">-</span><span class="pln">u github</span><span class="pun">.</span><span class="pln">com</span><span class="pun">/</span><span class="pln">gogits</span><span class="pun">/</span><span class="pln">gogs</span></code></li><li class="L2"><code class="lang-bash"></code></li><li class="L3"><code class="lang-bash"><span class="pln">$ cd $GOPATH</span><span class="pun">/</span><span class="pln">src</span><span class="pun">/</span><span class="pln">github</span><span class="pun">.</span><span class="pln">com</span><span class="pun">/</span><span class="pln">gogits</span><span class="pun">/</span><span class="pln">gogs</span></code></li><li class="L4"><code class="lang-bash"></code></li><li class="L5"><code class="lang-bash"><span class="com"># 移除旧的二进制</span></code></li><li class="L6"><code class="lang-bash"><span class="pln">$ rm gogs</span></code></li><li class="L7"><code class="lang-bash"></code></li><li class="L8"><code class="lang-bash"><span class="com"># 或将旧的二进制进行备份</span></code></li><li class="L9"><code class="lang-bash"><span class="pln">$ mv gogs gogs</span><span class="pun">.</span><span class="pln">$</span><span class="pun">(</span><span class="pln">date </span><span class="pun">+%</span><span class="pln">Y</span><span class="pun">-%</span><span class="pln">m</span><span class="pun">-%</span><span class="pln">d</span><span class="pun">).</span><span class="pln">old</span></code></li><li class="L0"><code class="lang-bash"></code></li><li class="L1"><code class="lang-bash"><span class="com"># 重新构建 Gogs</span></code></li><li class="L2"><code class="lang-bash"><span class="pln">$ go build</span></code></li></ol></pre>
+<p>其它操作：</p>
+<ul>
+<li><a href="/read/gogs_zh/installation-install_from_source#%E6%9E%84%E5%BB%BA-develop-%E5%88%86%E6%94%AF%E7%89%88%E6%9C%AC">构建 <code>develop</code> 分支版本</a></li><li><a href="/read/gogs_zh/installation-install_from_source#%E6%B5%8B%E8%AF%95%E5%AE%89%E8%A3%85">测试安装</a></li><li><a href="/read/gogs_zh/installation-install_from_source#%E4%BD%BF%E7%94%A8%E6%A0%87%E7%AD%BE%E6%9E%84%E5%BB%BA">使用标签构建</a></li></ul>
+
+    </div>
+</body>
+</html>

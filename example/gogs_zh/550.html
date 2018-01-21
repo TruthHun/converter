@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">2.2 配置与运行</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#配置与运行" level="1">配置与运行</a><ul><li><a class="toc-level-2" href="#配置文件" level="2">配置文件</a><ul><li><a class="toc-level-3" href="#默认配置文件" level="3">默认配置文件</a></li><li><a class="toc-level-3" href="#自定义配置文件" level="3">自定义配置文件</a></li><li><a class="toc-level-3" href="#为什么要这么做？" level="3">为什么要这么做？</a></li></ul></li><li><a class="toc-level-2" href="#运行 Gogs 服务" level="2">运行 Gogs 服务</a><ul><li><a class="toc-level-3" href="#开发者模式" level="3">开发者模式</a></li><li><a class="toc-level-3" href="#部署模式" level="3">部署模式</a><ul></ul></li></ul></li></ul></li></ul></div><h1 id="h1-u914Du7F6Eu4E0Eu8FD0u884C"><a name="配置与运行" class="reference-link"></a><span class="header-link octicon octicon-link"></span>配置与运行</h1><h2 id="h2-u914Du7F6Eu6587u4EF6"><a name="配置文件" class="reference-link"></a><span class="header-link octicon octicon-link"></span>配置文件</h2><h3 id="h3-u9ED8u8BA4u914Du7F6Eu6587u4EF6"><a name="默认配置文件" class="reference-link"></a><span class="header-link octicon octicon-link"></span>默认配置文件</h3><p>默认配置都保存在 <code>conf/app.ini</code>，您 <strong>永远不需要</strong> 编辑它。该文件从 <code>v0.6.0</code> 版本开始被嵌入到二进制中。</p>
+<h3 id="h3-u81EAu5B9Au4E49u914Du7F6Eu6587u4EF6"><a name="自定义配置文件" class="reference-link"></a><span class="header-link octicon octicon-link"></span>自定义配置文件</h3><p>那么，在不允许修改默认配置文件 <code>conf/app.ini</code> 的情况下，怎么才能自定义配置呢？很简单，只要创建 <code>custom/conf/app.ini</code> 就可以！在 <code>custom/conf/app.ini</code> 文件中修改相应选项的值即可。</p>
+<p>例如，需要改变仓库根目录的路径：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pun">[</span><span class="pln">repository</span><span class="pun">]</span></code></li><li class="L1"><code><span class="pln">ROOT </span><span class="pun">=</span><span class="pln"> </span><span class="str">/home/</span><span class="pln">jiahuachen</span><span class="pun">/</span><span class="pln">gogs</span><span class="pun">-</span><span class="pln">repositories</span></code></li></ol></pre><p>当然，您也可以修改数据库配置：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code><span class="pun">[</span><span class="pln">database</span><span class="pun">]</span></code></li><li class="L1"><code><span class="pln">PASSWD </span><span class="pun">=</span><span class="pln"> root</span></code></li></ol></pre><h3 id="h3--"><a name="为什么要这么做？" class="reference-link"></a><span class="header-link octicon octicon-link"></span>为什么要这么做？</h3><p>乍一看，这么做有些复杂，但是这么做可以有效地保护您的自定义配置不被破坏：</p>
+<ul>
+<li>从二进制安装的用户，可以直接替换二进制及其它文件而不至于重新编写自定义配置。</li><li>从源码安装的用户，可以避免由于版本管理系统导致的文件修改冲突。</li></ul>
+<h2 id="h2--gogs-"><a name="运行 Gogs 服务" class="reference-link"></a><span class="header-link octicon octicon-link"></span>运行 Gogs 服务</h2><h3 id="h3-u5F00u53D1u8005u6A21u5F0F"><a name="开发者模式" class="reference-link"></a><span class="header-link octicon octicon-link"></span>开发者模式</h3><ul>
+<li>您需要在 <code>custom/conf/app.ini</code> 文件中将选项 <code>security -&gt; INSTALL_LOCK</code> 的值设置为 <code>true</code>。</li><li><p>您可以使用超能的 <code>make</code> 命令：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-sh"><span class="pln">$ make</span></code></li><li class="L1"><code class="lang-sh"><span class="pln">$ </span><span class="pun">./</span><span class="pln">gogs web</span></code></li></ol></pre>
+</li></ul>
+<h3 id="h3-u90E8u7F72u6A21u5F0F"><a name="部署模式" class="reference-link"></a><span class="header-link octicon octicon-link"></span>部署模式</h3><p><strong>脚本均放置在 <code>scripts</code> 目录，但请在仓库根目录执行它们</strong></p>
+<ul>
+<li>Gogs 支持多种方式的启动：<ul>
+<li>普通：只需执行 <code>./gogs web</code></li><li>守护进程：详见 <a href="https://github.com/gogits/gogs/tree/master/scripts">scripts</a> 文件夹</li></ul>
+</li><li>然后访问 <code>/install</code> 来完成首次运行的配置工作</li></ul>
+
+    </div>
+</body>
+</html>

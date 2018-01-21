@@ -90,3 +90,4 @@ $RECYCLE.BIN/
 
 .gitignore
 .idea/
+example/gogs_zh/output

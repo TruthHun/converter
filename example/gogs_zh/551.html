@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">2.3 二进制安装</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#二进制安装" level="1">二进制安装</a><ul><li><a class="toc-level-2" href="#备注" level="2">备注</a></li><li><a class="toc-level-2" href="#如何使用下载好的压缩包？" level="2">如何使用下载好的压缩包？</a></li><li><a class="toc-level-2" href="#如何通过二进制升级？" level="2">如何通过二进制升级？</a><ul><li><a class="toc-level-3" href="#0.11.34 @ 2017-11-22" level="3">0.11.34 @ 2017-11-22</a></li><li><a class="toc-level-3" href="#0.11.29 @ 2017-08-15" level="3">0.11.29 @ 2017-08-15</a></li><li><a class="toc-level-3" href="#0.10.18 @ 2017-03-14" level="3">0.10.18 @ 2017-03-14</a></li><li><a class="toc-level-3" href="#v0.9.141 @ 2017-02-11" level="3">v0.9.141 @ 2017-02-11</a><ul></ul></li></ul></li></ul></li></ul></div><h1 id="h1-u4E8Cu8FDBu5236u5B89u88C5"><a name="二进制安装" class="reference-link"></a><span class="header-link octicon octicon-link"></span>二进制安装</h1><p><strong>目前只提供最近发布的小版本二进制下载，更多版本下载请前往 <a href="https://github.com/gogits/gogs/releases">GitHub</a> 查看。</strong></p>
+<p>所有的版本都支持 <strong>MySQL</strong>、<strong>PostgreSQL</strong>、<strong>MSSQL</strong> 和 <strong>TiDB</strong>（使用 MySQL 协议）作为数据库，并且均使用构建标签（build tags）<strong><code>cert</code></strong> 进行构建。需要注意的是，不同的版本的支持状态有所不同，请根据实际的 Gogs 提示进行操作。</p>
+<h2 id="h2-u5907u6CE8"><a name="备注" class="reference-link"></a><span class="header-link octicon octicon-link"></span>备注</h2><ul>
+<li><code>mws</code> 表示提供内置 Windows 服务支持，如果您使用 NSSM 请使用另外一个版本。</li></ul>
+<h2 id="h2--"><a name="如何使用下载好的压缩包？" class="reference-link"></a><span class="header-link octicon octicon-link"></span>如何使用下载好的压缩包？</h2><ol>
+<li>解压压缩包。</li><li>使用命令 <code>cd</code> 进入到刚刚创建的目录。</li><li>执行命令 <code>./gogs web</code>，然后，就没有然后了。</li></ol>
+<h2 id="h2--"><a name="如何通过二进制升级？" class="reference-link"></a><span class="header-link octicon octicon-link"></span>如何通过二进制升级？</h2><ol>
+<li>下载最新版的压缩包。</li><li>删除当前的 <code>templates</code> 目录。</li><li>解压压缩包并将所有内容复制粘贴到相应（当前）的位置。</li></ol>
+<h3 id="h3-0-11-34-2017-11-22"><a name="0.11.34 @ 2017-11-22" class="reference-link"></a><span class="header-link octicon octicon-link"></span>0.11.34 @ 2017-11-22</h3><table>
+<thead>
+<tr>
+<th>系统名称</th>
+<th>系统类型</th>
+<th>SQLite</th>
+<th>PAM</th>
+<th>下载（<a href="https://github.com/gogits/gogs/releases/tag/v0.11.34">GitHub</a>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>386</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/linux_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.34/linux_386.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/linux_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/linux_386.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>amd64</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.34/linux_amd64.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/linux_amd64.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>armv5</td>
+<td>❌</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/linux_armv5.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/linux_armv5.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Raspberry Pi</td>
+<td>v2&amp;v3 / armv6</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/raspi2_armv6.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/raspi2_armv6.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>386</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/windows_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.34/windows_386_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/windows_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/windows_386_mws.zip">ZIP w/mws</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.34/windows_amd64_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/windows_amd64_mws.zip">ZIP w/ mws</a></td>
+</tr>
+<tr>
+<td>Mac OS</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.34/darwin_amd64.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.34/darwin_amd64.zip">ZIP</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-0-11-29-2017-08-15"><a name="0.11.29 @ 2017-08-15" class="reference-link"></a><span class="header-link octicon octicon-link"></span>0.11.29 @ 2017-08-15</h3><table>
+<thead>
+<tr>
+<th>系统名称</th>
+<th>系统类型</th>
+<th>SQLite</th>
+<th>PAM</th>
+<th>下载（<a href="https://github.com/gogits/gogs/releases/tag/v0.11.29">GitHub</a>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>386</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/linux_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.29/linux_386.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/linux_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/linux_386.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>amd64</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.29/linux_amd64.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/linux_amd64.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>armv5</td>
+<td>❌</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/linux_armv5.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/linux_armv5.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Raspberry Pi</td>
+<td>v2 / armv6</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/raspi2_armv6.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/raspi2_armv6.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>386</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/windows_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.29/windows_386_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/windows_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/windows_386_mws.zip">ZIP w/mws</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.11.29/windows_amd64_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/windows_amd64_mws.zip">ZIP w/ mws</a></td>
+</tr>
+<tr>
+<td>Mac OS</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.11.29/darwin_amd64.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.11.29/darwin_amd64.zip">ZIP</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-0-10-18-2017-03-14"><a name="0.10.18 @ 2017-03-14" class="reference-link"></a><span class="header-link octicon octicon-link"></span>0.10.18 @ 2017-03-14</h3><table>
+<thead>
+<tr>
+<th>系统名称</th>
+<th>系统类型</th>
+<th>SQLite</th>
+<th>PAM</th>
+<th>下载（<a href="https://github.com/gogits/gogs/releases/tag/v0.10.18">GitHub</a>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>386</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/linux_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.10.18/linux_386.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/linux_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/linux_386.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>amd64</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.10.18/linux_amd64.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/linux_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/linux_amd64.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>armv5</td>
+<td>❌</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/linux_armv5.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/linux_armv5.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Raspberry Pi</td>
+<td>v2 / armv6</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/raspi2_armv6.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/raspi2_armv6.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>386</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/windows_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.10.18/windows_386_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/windows_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/windows_386_mws.zip">ZIP w/mws</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/0.10.18/windows_amd64_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/windows_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/windows_amd64_mws.zip">ZIP w/ mws</a></td>
+</tr>
+<tr>
+<td>Mac OS</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/0.10.18/darwin_amd64.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/0.10.18/darwin_amd64.zip">ZIP</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-v0-9-141-2017-02-11"><a name="v0.9.141 @ 2017-02-11" class="reference-link"></a><span class="header-link octicon octicon-link"></span>v0.9.141 @ 2017-02-11</h3><table>
+<thead>
+<tr>
+<th>系统名称</th>
+<th>系统类型</th>
+<th>SQLite</th>
+<th>PAM</th>
+<th>下载（<a href="https://github.com/gogits/gogs/releases/tag/v0.9.141">GitHub</a>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>386</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_linux_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/gogs_v0.9.141_linux_386.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_386.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>amd64</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_linux_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/gogs_v0.9.141_linux_amd64.tar.gz">TAR.GZ</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_amd64.tar.gz">TAR.GZ</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>armv5</td>
+<td>❌</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_linux_armv5.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_armv5.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>armv6</td>
+<td>❌</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_linux_armv6.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_linux_armv6.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Raspberry Pi</td>
+<td>v2</td>
+<td>✅</td>
+<td>✅</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_raspi2_armv6.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_raspi2_armv6.zip">ZIP</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>386</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_windows_386.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/gogs_v0.9.141_windows_386_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_windows_386.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_windows_386_mws.zip">ZIP w/mws</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_windows_amd64.zip">ZIP</a> \</td>
+<td><a href="https://dl.gogs.io/gogs_v0.9.141_windows_amd64_mws.zip">ZIP w/ mws</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_windows_amd64.zip">ZIP</a> \</td>
+<td><a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_windows_amd64_mws.zip">ZIP w/ mws</a></td>
+</tr>
+<tr>
+<td>Mac OS</td>
+<td>amd64</td>
+<td>✅</td>
+<td>❌</td>
+<td>HTTPS: <a href="https://dl.gogs.io/gogs_v0.9.141_darwin_amd64.zip">ZIP</a> - CDN: <a href="http://7d9nal.com2.z0.glb.qiniucdn.com/gogs_v0.9.141_darwin_amd64.zip">ZIP</a></td>
+</tr>
+</tbody>
+</table>
+<p>安装完成后可继续参照 [配置与运行]。</p>
+
+    </div>
+</body>
+</html>

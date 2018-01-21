@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">4.1 自定义模板</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#自定义模板" level="1">自定义模板</a><ul><li><a class="toc-level-2" href="#添加自定义 CSS 文件" level="2">添加自定义 CSS 文件</a><ul></ul></li></ul></li></ul></div><h1 id="h1-u81EAu5B9Au4E49u6A21u677F"><a name="自定义模板" class="reference-link"></a><span class="header-link octicon octicon-link"></span>自定义模板</h1><p>您可以不需要修改仓库源码就能注入自定义头部和尾部内容，这对添加分析代码和自定义静态资源非常有用。</p>
+<p>了解更多有关 <a href="https://discuss.gogs.io/t/how-to-inject-custom-head-and-footer/943">注入自定义头部和尾部</a>。</p>
+<h2 id="h2--css-"><a name="添加自定义 CSS 文件" class="reference-link"></a><span class="header-link octicon octicon-link"></span>添加自定义 CSS 文件</h2><p>这里展示如何为您的 Gogs 实例添加自定义 CSS 文件，目录和文件名都是为了方便演示，您可以把文件放在任何能够通过网络访问的目录。</p>
+<ol>
+<li>在 <code>public/css</code> 目录下创建一个名为 <code>custom.css</code> 的文件</li><li>向文件中添加一些 CSS 规则</li><li>编辑 <code>custom/templates/inject/head.tmpl</code> 文件并添加一行内容 <code>&lt;link rel=&#34;stylesheet&#34; href=&#34;/css/custom.css&#34;&gt;</code></li><li>重启 Gogs</li><li>后续对自定义 CSS 文件的编辑不需要重启 Gogs</li></ol>
+
+    </div>
+</body>
+</html>

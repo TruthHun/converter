@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">5.1 配置文件手册</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#配置文件手册" level="1">配置文件手册</a><ul><li><a class="toc-level-3" href="#概览" level="3">概览</a></li><li><a class="toc-level-3" href="#服务器 (&lt;code&gt;server&lt;/code&gt;)" level="3">服务器 (<code>server</code>)</a></li><li><a class="toc-level-3" href="#仓库 (&lt;code&gt;repository&lt;/code&gt;)" level="3">仓库 (<code>repository</code>)</a><ul><li><a class="toc-level-4" href="#仓库 - 编辑器 (&lt;code&gt;repository.editor&lt;/code&gt;)" level="4">仓库 - 编辑器 (<code>repository.editor</code>)</a></li><li><a class="toc-level-4" href="#仓库 - 文件上传 (&lt;code&gt;repository.upload&lt;/code&gt;)" level="4">仓库 - 文件上传 (<code>repository.upload</code>)</a></li><li><a class="toc-level-4" href="#版本发布 - 附件 (&lt;code&gt;release.attachment&lt;/code&gt;)" level="4">版本发布 - 附件 (<code>release.attachment</code>)</a></li></ul></li><li><a class="toc-level-3" href="#Markdown (&lt;code&gt;markdown&lt;/code&gt;)" level="3">Markdown (<code>markdown</code>)</a></li><li><a class="toc-level-3" href="#Smartypants (&lt;code&gt;smartypants&lt;/code&gt;)" level="3">Smartypants (<code>smartypants</code>)</a></li><li><a class="toc-level-3" href="#HTTP (&lt;code&gt;http&lt;/code&gt;)" level="3">HTTP (<code>http</code>)</a></li><li><a class="toc-level-3" href="#数据库 (&lt;code&gt;database&lt;/code&gt;)" level="3">数据库 (<code>database</code>)</a></li><li><a class="toc-level-3" href="#应用管理 (&lt;code&gt;admin&lt;/code&gt;)" level="3">应用管理 (<code>admin</code>)</a></li><li><a class="toc-level-3" href="#安全 (&lt;code&gt;security&lt;/code&gt;)" level="3">安全 (<code>security</code>)</a></li><li><a class="toc-level-3" href="#服务 (&lt;code&gt;service&lt;/code&gt;)" level="3">服务 (<code>service</code>)</a></li><li><a class="toc-level-3" href="#Web 钩子 (&lt;code&gt;webhook&lt;/code&gt;)" level="3">Web 钩子 (<code>webhook</code>)</a></li><li><a class="toc-level-3" href="#邮件 (&lt;code&gt;mailer&lt;/code&gt;)" level="3">邮件 (<code>mailer</code>)</a></li><li><a class="toc-level-3" href="#缓存 (&lt;code&gt;cache&lt;/code&gt;)" level="3">缓存 (<code>cache</code>)</a></li><li><a class="toc-level-3" href="#会话 (&lt;code&gt;session&lt;/code&gt;)" level="3">会话 (<code>session</code>)</a></li><li><a class="toc-level-3" href="#图片 (&lt;code&gt;picture&lt;/code&gt;)" level="3">图片 (<code>picture</code>)</a></li><li><a class="toc-level-3" href="#附件 (&lt;code&gt;attachment&lt;/code&gt;)" level="3">附件 (<code>attachment</code>)</a></li><li><a class="toc-level-3" href="#时间 (&lt;code&gt;time&lt;/code&gt;)" level="3">时间 (<code>time</code>)</a></li><li><a class="toc-level-3" href="#日志 (&lt;code&gt;log&lt;/code&gt;)" level="3">日志 (<code>log</code>)</a><ul><li><a class="toc-level-4" href="#日志 - 控制台 (&lt;code&gt;log.console&lt;/code&gt;)" level="4">日志 - 控制台 (<code>log.console</code>)</a></li><li><a class="toc-level-4" href="#日志 - 文件 (&lt;code&gt;log.file&lt;/code&gt;)" level="4">日志 - 文件 (<code>log.file</code>)</a></li><li><a class="toc-level-4" href="#日志 - Slack (&lt;code&gt;log.slack&lt;/code&gt;)" level="4">日志 - Slack (<code>log.slack</code>)</a></li></ul></li><li><a class="toc-level-3" href="#Cron (&lt;code&gt;cron&lt;/code&gt;)" level="3">Cron (<code>cron</code>)</a><ul><li><a class="toc-level-4" href="#Cron - 更新镜像 (&lt;code&gt;cron.update_mirrors&lt;/code&gt;)" level="4">Cron - 更新镜像 (<code>cron.update_mirrors</code>)</a></li><li><a class="toc-level-4" href="#Cron - 仓库健康检查 (&lt;code&gt;cron.repo_health_check&lt;/code&gt;)" level="4">Cron - 仓库健康检查 (<code>cron.repo_health_check</code>)</a></li><li><a class="toc-level-4" href="#Cron - 仓库统计检查 (&lt;code&gt;cron.check_repo_stats&lt;/code&gt;)" level="4">Cron - 仓库统计检查 (<code>cron.check_repo_stats</code>)</a></li><li><a class="toc-level-4" href="#Cron - 仓库归档清理 (&lt;code&gt;cron.repo_archive_cleanup&lt;/code&gt;)" level="4">Cron - 仓库归档清理 (<code>cron.repo_archive_cleanup</code>)</a></li></ul></li><li><a class="toc-level-3" href="#Git (&lt;code&gt;git&lt;/code&gt;)" level="3">Git (<code>git</code>)</a><ul><li><a class="toc-level-4" href="#Git - 超时 (&lt;code&gt;git.timeout&lt;/code&gt;)" level="4">Git - 超时 (<code>git.timeout</code>)</a></li></ul></li><li><a class="toc-level-3" href="#UI (&lt;code&gt;ui&lt;/code&gt;)" level="3">UI (<code>ui</code>)</a><ul><li><a class="toc-level-4" href="#UI - Admin (&lt;code&gt;ui.admin&lt;/code&gt;)" level="4">UI - Admin (<code>ui.admin</code>)</a></li></ul></li><li><a class="toc-level-3" href="#其他 (&lt;code&gt;other&lt;/code&gt;)" level="3">其他 (<code>other</code>)</a><ul></ul></li></ul></li></ul></div><h1 id="h1-u914Du7F6Eu6587u4EF6u624Bu518C"><a name="配置文件手册" class="reference-link"></a><span class="header-link octicon octicon-link"></span>配置文件手册</h1><p>本手册会详尽地描述有关 Gogs 配置文件的选项，帮助您更好地理解和使用 Gogs。</p>
+<p>请记住，任何修改都是发生在 <code>custom/conf/app.ini</code> 自定义配置文件中，该文件的具体位置与您的设置有关。</p>
+<p>完整的默认设置可以通过 <a href="https://github.com/gogits/gogs/blob/master/conf/app.ini">app.ini</a> 文件查看。如果您看到类似 <code>%(X)s</code> 字符，这是由 <a href="https://github.com/go-ini/ini/tree/v1#recursive-values">ini</a> 提供的递归取值的特性。</p>
+<h3 id="h3-u6982u89C8"><a name="概览" class="reference-link"></a><span class="header-link octicon octicon-link"></span>概览</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>APP_NAME</code></td>
+<td>应用名称，可以改成您的组织或公司名称</td>
+</tr>
+<tr>
+<td><code>RUN_USER</code></td>
+<td>运行应用的用户名称，我们建议您使用 <code>git</code>，但如果您在个人计算机上运行 Gogs，请修改为您的系统用户名称。如果没有正确设置这个值，很可能导致您的应用崩溃</td>
+</tr>
+<tr>
+<td><code>RUN_MODE</code></td>
+<td>鉴于性能和其它考虑，建议在部署环境下修改为 <code>prod</code> 模式。在您完成安装操作时，该值也会被设置为 <code>prod</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-server-code-"><a name="服务器 (&lt;code&gt;server&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>服务器 (<code>server</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROTOCOL</code></td>
+<td><code>http</code> 或 <code>https</code></td>
+</tr>
+<tr>
+<td><code>DOMAIN</code></td>
+<td>服务器域名</td>
+</tr>
+<tr>
+<td><code>ROOT_URL</code></td>
+<td>公开的完整 URL 路径</td>
+</tr>
+<tr>
+<td><code>HTTP_ADDR</code></td>
+<td>应用 HTTP 监听地址</td>
+</tr>
+<tr>
+<td><code>HTTP_PORT</code></td>
+<td>应用 HTTP 监听端口号</td>
+</tr>
+<tr>
+<td><code>UNIX_SOCKET_PERMISSION</code></td>
+<td>Unix 套接字文件的权限</td>
+</tr>
+<tr>
+<td><code>LOCAL_ROOT_URL</code></td>
+<td>用于 Gogs 工作进程（如：SSH）回访应用的本地（DMZ）URL，一般情况下请保持默认值，除非您的 SSH 服务器节点与 HTTP 并不是同一个节点入口</td>
+</tr>
+<tr>
+<td><code>DISABLE_SSH</code></td>
+<td>当 SSH 功能不可用时可以禁用</td>
+</tr>
+<tr>
+<td><code>START_SSH_SERVER</code></td>
+<td>启用该选项来启动内置 SSH 服务器</td>
+</tr>
+<tr>
+<td><code>SSH_DOMAIN</code></td>
+<td>允许公用网络访问 SSH 的域名</td>
+</tr>
+<tr>
+<td><code>SSH_PORT</code></td>
+<td>SSH 端口号，如果不为 <code>22</code> 的话可以在此修改</td>
+</tr>
+<tr>
+<td><code>SSH_LISTEN_HOST</code></td>
+<td>内置 SSH 服务器监听的地址</td>
+</tr>
+<tr>
+<td><code>SSH_LISTEN_PORT</code></td>
+<td>内置 SSH 服务器监听的端口</td>
+</tr>
+<tr>
+<td><code>SSH_ROOT_PATH</code></td>
+<td>SSH 根目录，一般为 <code>~/.ssh</code>，但必须填写为 <code>/home/git/.ssh</code></td>
+</tr>
+<tr>
+<td><code>SSH_KEY_TEST_PATH</code></td>
+<td>用于测试 SSH 公钥的临时目录</td>
+</tr>
+<tr>
+<td><code>SSH_KEYGEN_PATH</code></td>
+<td><code>ssh-keygen</code> 程序的路径，默认为 <code>ssh-keygen</code> 即通过系统路径查找</td>
+</tr>
+<tr>
+<td><code>MINIMUM_KEY_SIZE_CHECK</code></td>
+<td>指定不同类型的公钥的最小密钥大小</td>
+</tr>
+<tr>
+<td><code>OFFLINE_MODE</code></td>
+<td>D激活该选项来禁止从 CDN 获取静态资源，同时 Gravatar 服务也将被自动禁用</td>
+</tr>
+<tr>
+<td><code>DISABLE_ROUTER_LOG</code></td>
+<td>激活该选项来禁止打印路由日志</td>
+</tr>
+<tr>
+<td><code>CERT_FILE</code></td>
+<td>HTTPS 授权文件路径</td>
+</tr>
+<tr>
+<td><code>KEY_FILE</code></td>
+<td>HTTPS 的密钥文件路径</td>
+</tr>
+<tr>
+<td><code>STATIC_ROOT_PATH</code></td>
+<td>模板文件和静态文件的上级目录，默认为应用二进制所在的位置</td>
+</tr>
+<tr>
+<td><code>APP_DATA_PATH</code></td>
+<td>应用内部数据的存放目录</td>
+</tr>
+<tr>
+<td><code>ENABLE_GZIP</code></td>
+<td>激活该选项来启用应用级别 GZIP 支持</td>
+</tr>
+<tr>
+<td><code>LANDING_PAGE</code></td>
+<td>未登录用户的默认首页，可以是 <code>home</code> 或 <code>explore</code>（探索页）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-repository-code-"><a name="仓库 (&lt;code&gt;repository&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>仓库 (<code>repository</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROOT</code></td>
+<td>用户仓库存储根目录，必须为绝对路径，默认为 <code>~/&lt;user name&gt;/gogs-repositories</code></td>
+</tr>
+<tr>
+<td><code>SCRIPT_TYPE</code></td>
+<td>系统脚本类型，一般情况下均为 <code>bash</code>，但有些用户反应只能使用 <code>sh</code></td>
+</tr>
+<tr>
+<td><code>ANSI_CHARSET</code></td>
+<td>当遇到无法识别的字符集时使用的默认字符集</td>
+</tr>
+<tr>
+<td><code>FORCE_PRIVATE</code></td>
+<td>强制要求所有新建的仓库都是私有的</td>
+</tr>
+<tr>
+<td><code>MAX_CREATION_LIMIT</code></td>
+<td>全局默认的每个用户可创建创建仓库上限，<code>-1</code> 表示无限制</td>
+</tr>
+<tr>
+<td><code>PREFERRED_LICENSES</code></td>
+<td>建议用户首选的授权类型</td>
+</tr>
+<tr>
+<td><code>DISABLE_HTTP_GIT</code></td>
+<td>激活该选项来禁止用户通过 HTTP 对 Git 仓库进行交互操作，即用户只能通过 SSH 操作</td>
+</tr>
+<tr>
+<td><code>ENABLE_LOCAL_PATH_MIGRATION</code></td>
+<td>激活该选项来启用本地路径迁移仓库功能。启动后默认只有管理员可以使用，普通用户必须经由管理员授权</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--code-repository-editor-code-"><a name="仓库 - 编辑器 (&lt;code&gt;repository.editor&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>仓库 - 编辑器 (<code>repository.editor</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LINE_WRAP_EXTENSIONS</code></td>
+<td>需要显示为行包装的文件名后缀，通过逗号分隔。如果是无后缀名的文件，则单独放置一个逗号，例如：<code>.txt,</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--code-repository-upload-code-"><a name="仓库 - 文件上传 (&lt;code&gt;repository.upload&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>仓库 - 文件上传 (<code>repository.upload</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>激活该选项来启用仓库文件上传功能</td>
+</tr>
+<tr>
+<td><code>TEMP_PATH</code></td>
+<td>文件上传的临时存放目录</td>
+</tr>
+<tr>
+<td><code>ALLOWED_TYPES</code></td>
+<td>允许上传的文件类型（例如：”image/jpeg\</td>
+<td>image/png”），留空表示允许上传任意类型的文件</td>
+</tr>
+<tr>
+<td><code>FILE_MAX_SIZE</code></td>
+<td>单个上传的文件的最大体积，以 MB 为单位</td>
+</tr>
+<tr>
+<td><code>MAX_FILES</code></td>
+<td>单次同时上传的最多文件个数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--code-release-attachment-code-"><a name="版本发布 - 附件 (&lt;code&gt;release.attachment&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>版本发布 - 附件 (<code>release.attachment</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>激活该选项来启用版本发布附件功能</td>
+</tr>
+<tr>
+<td><code>PATH</code></td>
+<td>存放附件的路径</td>
+</tr>
+<tr>
+<td><code>ALLOWED_TYPES</code></td>
+<td>允许上传的 MIME 类型，例如 “image/jpeg\</td>
+<td>image/png”，使用 <code>*/*</code> 允许所有类型的文件</td>
+</tr>
+<tr>
+<td><code>MAX_SIZE</code></td>
+<td>最大允许上传的附件体积，单位为 MB，例如 <code>32</code></td>
+</tr>
+<tr>
+<td><code>MAX_FILES</code></td>
+<td>最大允许一次性上传的附件个数，例如 <code>10</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-markdown-code-markdown-code-"><a name="Markdown (&lt;code&gt;markdown&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Markdown (<code>markdown</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLE_HARD_LINE_BREAK</code></td>
+<td>指示是否启用硬性换行扩展</td>
+</tr>
+<tr>
+<td><code>CUSTOM_URL_SCHEMES</code></td>
+<td>允许被解析为链接的自定义 URL 方案，例如 <code>git</code>（用于 <code>git://</code>）和<code>magnet</code>（用于 <code>magnet://</code>）</td>
+</tr>
+<tr>
+<td><code>FILE_EXTENSIONS</code></td>
+<td>需要被渲染为 Markdown 格式的文件名后缀，通过逗号分隔。如果是无后缀名的文件，则单独放置一个逗号，例如：<code>.markdown,</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-smartypants-code-smartypants-code-"><a name="Smartypants (&lt;code&gt;smartypants&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Smartypants (<code>smartypants</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>指示是否启用 Smartypants 扩展</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-http-code-http-code-"><a name="HTTP (&lt;code&gt;http&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>HTTP (<code>http</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ACCESS_CONTROL_ALLOW_ORIGIN</code></td>
+<td>头信息 <code>Access-Control-Allow-Origin</code> 的自定义值，默认为空，即不响应此头信息</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-database-code-"><a name="数据库 (&lt;code&gt;database&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>数据库 (<code>database</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_TYPE</code></td>
+<td>数据库类型，可以是 <code>mysql</code>、<code>postgres</code>、<code>mssql</code> 或 <code>sqlite3</code></td>
+</tr>
+<tr>
+<td><code>HOST</code></td>
+<td>数据库主机地址与端口</td>
+</tr>
+<tr>
+<td><code>NAME</code></td>
+<td>数据库名称</td>
+</tr>
+<tr>
+<td><code>USER</code></td>
+<td>数据库用户名</td>
+</tr>
+<tr>
+<td><code>PASSWD</code></td>
+<td>数据库用户密码</td>
+</tr>
+<tr>
+<td><code>SSL_MODE</code></td>
+<td>仅限 PostgreSQL 使用</td>
+</tr>
+<tr>
+<td><code>PATH</code></td>
+<td>仅限 SQLite3 使用，数据库文件路径</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-admin-code-"><a name="应用管理 (&lt;code&gt;admin&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>应用管理 (<code>admin</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DISABLE_REGULAR_ORG_CREATION</code></td>
+<td>激活该选项来禁止普通用户（非管理员）创建组织</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-security-code-"><a name="安全 (&lt;code&gt;security&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>安全 (<code>security</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INSTALL_LOCK</code></td>
+<td>用于指示是否允许访问安装页面（该页面可以设置管理员帐号，因此该选项非常重要）</td>
+</tr>
+<tr>
+<td><code>SECRET_KEY</code></td>
+<td>全局的加密密钥，<strong>务必修改该值以确保您的服务器安全</strong>（会在每次安装时自动生成随机字符串）</td>
+</tr>
+<tr>
+<td><code>LOGIN_REMEMBER_DAYS</code></td>
+<td>记住登录的天数</td>
+</tr>
+<tr>
+<td><code>COOKIE_USERNAME</code></td>
+<td>记录用户名的 Cookie 名称</td>
+</tr>
+<tr>
+<td><code>COOKIE_REMEMBER_NAME</code></td>
+<td>记录用户自动登录信息的 Cookie 名称</td>
+</tr>
+<tr>
+<td><code>REVERSE_PROXY_AUTHENTICATION_USER</code></td>
+<td>反向代理认证用户的 Header 字段名</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-service-code-"><a name="服务 (&lt;code&gt;service&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>服务 (<code>service</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ACTIVE_CODE_LIVE_MINUTES</code></td>
+<td>激活码的有效期，单位为分钟</td>
+</tr>
+<tr>
+<td><code>RESET_PASSWD_CODE_LIVE_MINUTES</code></td>
+<td>重置密码的有效期，单位为分钟</td>
+</tr>
+<tr>
+<td><code>REGISTER_EMAIL_CONFIRM</code></td>
+<td>激活该选项来要求注册用户必须验证邮箱，要求已启用 <code>Mailer</code></td>
+</tr>
+<tr>
+<td><code>DISABLE_REGISTRATION</code></td>
+<td>激活该选项来禁止用户注册功能，只能由管理员创建帐号</td>
+</tr>
+<tr>
+<td><code>SHOW_REGISTRATION_BUTTON</code></td>
+<td>用于指示是否显示注册按钮</td>
+</tr>
+<tr>
+<td><code>REQUIRE_SIGNIN_VIEW</code></td>
+<td>激活该选项来要求用户必须登录才能浏览任何页面</td>
+</tr>
+<tr>
+<td><code>ENABLE_CACHE_AVATAR</code></td>
+<td>激活该选项来缓存 Gravatar 的头像</td>
+</tr>
+<tr>
+<td><code>ENABLE_NOTIFY_MAIL</code></td>
+<td>激活该选项来发送通知邮件给关注者，例如创建 issue 时，要求已启用 <code>Mailer</code></td>
+</tr>
+<tr>
+<td><code>ENABLE_REVERSE_PROXY_AUTHENTICATION</code></td>
+<td>激活该选项来开启反向代理用户认证，请从 <a href="https://github.com/gogits/gogs/issues/165">https://github.com/gogits/gogs/issues/165</a> 了解更多信息</td>
+</tr>
+<tr>
+<td><code>ENABLE_REVERSE_PROXY_AUTO_REGISTRATION</code></td>
+<td>激活该选项来开启反向代理用户认证的自动注册功能</td>
+</tr>
+<tr>
+<td><code>DISABLE_MINIMUM_KEY_SIZE_CHECK</code></td>
+<td>激活该选项来禁止检查响应类型的密钥最小长度</td>
+</tr>
+<tr>
+<td><code>ENABLE_CAPTCHA</code></td>
+<td>激活该选项以在用户注册时要求输入验证码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-web-code-webhook-code-"><a name="Web 钩子 (&lt;code&gt;webhook&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Web 钩子 (<code>webhook</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TYPES</code></td>
+<td>启动的 Web 钩子类型，可以是 <code>gogs</code>、<code>slack</code> 或 <code>discord</code></td>
+</tr>
+<tr>
+<td><code>DELIVER_TIMEOUT</code></td>
+<td>发送通知的超时时间，以秒为单位</td>
+</tr>
+<tr>
+<td><code>SKIP_TLS_VERIFY</code></td>
+<td>指示是否允许向具有非信任证书的地址发送通知</td>
+</tr>
+<tr>
+<td><code>PAGING_NUM</code></td>
+<td>Web 钩子历史页面每页显示记录条数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-mailer-code-"><a name="邮件 (&lt;code&gt;mailer&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>邮件 (<code>mailer</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>启用该选项以激活邮件服务</td>
+</tr>
+<tr>
+<td><code>DISABLE_HELO</code></td>
+<td>禁用 HELO 操作</td>
+</tr>
+<tr>
+<td><code>HELO_HOSTNAME</code></td>
+<td>HELO 操作的自定义主机名</td>
+</tr>
+<tr>
+<td><code>HOST</code></td>
+<td>SMTP 主机地址与端口</td>
+</tr>
+<tr>
+<td><code>FROM</code></td>
+<td>邮箱的来自地址，遵循 RFC 5322规范，可以是一个单纯的邮箱地址或者 <code>&#34;名字&#34; &lt;<a href="mailto:email@example.com">email@example.com</a>&gt;</code> 的形式</td>
+</tr>
+<tr>
+<td><code>USER</code></td>
+<td>邮箱用户名</td>
+</tr>
+<tr>
+<td><code>PASSWD</code></td>
+<td>邮箱密码</td>
+</tr>
+<tr>
+<td><code>SKIP_VERIFY</code></td>
+<td>不验证自签发证书的有效性</td>
+</tr>
+<tr>
+<td><code>USE_PLAIN_TEXT</code></td>
+<td>使用 <code>text/plain</code> 作为邮件内容格式</td>
+</tr>
+</tbody>
+</table>
+<p>备注：Gogs 仅支持使用 STARTTLS 的 SMTP 协议</p>
+<h3 id="h3--code-cache-code-"><a name="缓存 (&lt;code&gt;cache&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>缓存 (<code>cache</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADAPTER</code></td>
+<td>缓存引擎适配器，可以为 <code>momery</code>、<code>redis</code> 或 <code>memcache</code>。如果您使用 <code>redis</code> 或 <code>memcache</code>，请确保使用 <code>-tags</code> 选项重新构建所有依赖，例如：<code>go build -tags=&#39;redis&#39;</code></td>
+</tr>
+<tr>
+<td><code>INTERVAL</code></td>
+<td>仅限内存缓存使用，GC 周期，单位为秒</td>
+</tr>
+<tr>
+<td><code>HOST</code></td>
+<td>仅限 redis 和 memcache 使用，主机地址和端口号</td>
+</tr>
+<tr>
+<td>-</td>
+<td>Redis：<code>network=tcp,addr=127.0.0.1:6379,password=macaron,db=0,pool_size=100,idle_timeout=180</code></td>
+</tr>
+<tr>
+<td>-</td>
+<td>Memache：<code>127.0.0.1:9090;127.0.0.1:9091</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-session-code-"><a name="会话 (&lt;code&gt;session&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>会话 (<code>session</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROVIDER</code></td>
+<td>Session 引擎提供者，可以是 <code>memory</code>、<code>file</code>、<code>redis</code> 或 <code>mysql</code></td>
+</tr>
+<tr>
+<td><code>PROVIDER_CONFIG</code></td>
+<td>如果提供者为 file，则为文件根目录；如果为其它提供者，则为主机地址和端口号</td>
+</tr>
+<tr>
+<td><code>COOKIE_SECURE</code></td>
+<td>激活该选项以要求所有 session 操作均通过 HTTPS</td>
+</tr>
+<tr>
+<td><code>GC_INTERVAL_TIME</code></td>
+<td>GC 周期，单位为秒</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-picture-code-"><a name="图片 (&lt;code&gt;picture&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>图片 (<code>picture</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AVATAR_UPLOAD_PATH</code></td>
+<td>存放用户上传头像的目录</td>
+</tr>
+<tr>
+<td><code>GRAVATAR_SOURCE</code></td>
+<td>可以是 <code>gravatar</code>、<code>duoshuo</code> 或任何 URL，例如：<code>http://cn.gravatar.com/avatar/</code></td>
+</tr>
+<tr>
+<td><code>DISABLE_GRAVATAR</code></td>
+<td>激活该选项来仅使用本地头像</td>
+</tr>
+<tr>
+<td><code>ENABLE_FEDERATED_AVATAR</code></td>
+<td>激活该选项来启用 Federated 头像服务（<a href="http://www.libravatar.org），当">http://www.libravatar.org），当</a> Gravatar 被禁用时此选项无法生效</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-attachment-code-"><a name="附件 (&lt;code&gt;attachment&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>附件 (<code>attachment</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>激活该选项以允许用户上传附件</td>
+</tr>
+<tr>
+<td><code>PATH</code></td>
+<td>存放附件的路径</td>
+</tr>
+<tr>
+<td><code>ALLOWED_TYPES</code></td>
+<td>允许上传的 MIME 类型，例如 “image/jpeg\</td>
+<td>image/png”，使用 <code>*/*</code> 允许所有类型的文件</td>
+</tr>
+<tr>
+<td><code>MAX_SIZE</code></td>
+<td>最大允许上传的附件体积，单位为 MB，例如 <code>4</code></td>
+</tr>
+<tr>
+<td><code>MAX_FILES</code></td>
+<td>最大允许一次性上传的附件个数，例如 <code>5</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-time-code-"><a name="时间 (&lt;code&gt;time&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>时间 (<code>time</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FORMAT</code></td>
+<td>指定日期的输出格式，默认为 RFC1123，其它可选的格式为 ANSIC、UnixDate、RubyDate、RFC822、RFC822Z、RFC850、RFC1123、RFC1123Z、RFC3339、RFC3339Nano、Kitchen、Stamp、StampMilli、StampMicro 和 StampNano。访问 <a href="http://golang.org/pkg/time/#pkg-constants">http://golang.org/pkg/time/#pkg-constants</a> 查看详情</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-log-code-"><a name="日志 (&lt;code&gt;log&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>日志 (<code>log</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROOT_PATH</code></td>
+<td>日志文件的根目录</td>
+</tr>
+<tr>
+<td><code>MODE</code></td>
+<td>日志记录模式，默认为 <code>console</code>。如果想要开启多模式，请使用逗号分割，例如：<code>&#34;console, file&#34;</code></td>
+</tr>
+<tr>
+<td><code>LEVEL</code></td>
+<td>基本日志级别，默认为 <code>Trace</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--code-log-console-code-"><a name="日志 - 控制台 (&lt;code&gt;log.console&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>日志 - 控制台 (<code>log.console</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LEVEL</code></td>
+<td>控制台日志级别，留空则继承父值</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--code-log-file-code-"><a name="日志 - 文件 (&lt;code&gt;log.file&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>日志 - 文件 (<code>log.file</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LEVEL</code></td>
+<td>控制台日志级别，留空则继承父值</td>
+</tr>
+<tr>
+<td><code>LOG_RORATE</code></td>
+<td>激活该选项以启用日志文件自转</td>
+</tr>
+<tr>
+<td><code>DAILY_ROTATE</code></td>
+<td>激活该选项以进行日常自转</td>
+</tr>
+<tr>
+<td><code>MAX_SIZE_SHIFT</code></td>
+<td>自转需要达到的最大文件体积，使用位左移，默认为 28 即 1 &lt;&lt; 28，表示 256MB</td>
+</tr>
+<tr>
+<td><code>MAX_LINES</code></td>
+<td>自转需要达到的最大文件行数，默认为 <code>1000000</code></td>
+</tr>
+<tr>
+<td><code>MAX_DAYS</code></td>
+<td>保留自转文件的最长期限，默认为 <code>7</code> 天后删除</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4--slack-code-log-slack-code-"><a name="日志 - Slack (&lt;code&gt;log.slack&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>日志 - Slack (<code>log.slack</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LEVEL</code></td>
+<td>控制台日志级别，留空则继承父值</td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td>Slack Web 钩子 URL</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-cron-code-cron-code-"><a name="Cron (&lt;code&gt;cron&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cron (<code>cron</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENABLED</code></td>
+<td>激活该选项以允许周期性运行 Cron 任务</td>
+</tr>
+<tr>
+<td><code>RUN_AT_START</code></td>
+<td>激活该选项以允许在启动时执行 Cron 任务</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-cron-code-cron-update_mirrors-code-"><a name="Cron - 更新镜像 (&lt;code&gt;cron.update_mirrors&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cron - 更新镜像 (<code>cron.update_mirrors</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SCHEDULE</code></td>
+<td>定时更新仓库镜像的 Cron 语法，例如：<code><a href="https://github.com/every" title="@every" class="at-link">@every</a> 1h</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-cron-code-cron-repo_health_check-code-"><a name="Cron - 仓库健康检查 (&lt;code&gt;cron.repo_health_check&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cron - 仓库健康检查 (<code>cron.repo_health_check</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SCHEDULE</code></td>
+<td>定时进行仓库健康检查的 Cron 语法，例如：<code><a href="https://github.com/every" title="@every" class="at-link">@every</a> 24h</code></td>
+</tr>
+<tr>
+<td><code>TIMEOUT</code></td>
+<td>仓库健康检查超时的定义语法，例如：<code>60s</code></td>
+</tr>
+<tr>
+<td><code>ARGS</code></td>
+<td><code>git fsck</code> 命令的参数，例如：<code>--unreachable --tags</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-cron-code-cron-check_repo_stats-code-"><a name="Cron - 仓库统计检查 (&lt;code&gt;cron.check_repo_stats&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cron - 仓库统计检查 (<code>cron.check_repo_stats</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RUN_AT_START</code></td>
+<td>激活该选项以在启动时执行仓库统计检查</td>
+</tr>
+<tr>
+<td><code>SCHEDULE</code></td>
+<td>定时进行仓库统计检查的 Cron 语法，例如：<code><a href="https://github.com/every" title="@every" class="at-link">@every</a> 24h</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-cron-code-cron-repo_archive_cleanup-code-"><a name="Cron - 仓库归档清理 (&lt;code&gt;cron.repo_archive_cleanup&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Cron - 仓库归档清理 (<code>cron.repo_archive_cleanup</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RUN_AT_START</code></td>
+<td>激活该选项以在启动时执行仓库归档清理</td>
+</tr>
+<tr>
+<td><code>SCHEDULE</code></td>
+<td>定时进行仓库归档清理的 Cron 语法，例如：<code><a href="https://github.com/every" title="@every" class="at-link">@every</a> 24h</code></td>
+</tr>
+<tr>
+<td><code>OLDER_THAN</code></td>
+<td>仓库归档的文件有效期，过期的归档将被清理，例如：<code>24h</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-git-code-git-code-"><a name="Git (&lt;code&gt;git&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Git (<code>git</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DISABLE_DIFF_HIGHLIGHT</code></td>
+<td>激活该选项以禁用行内差异高亮</td>
+</tr>
+<tr>
+<td><code>MAX_GIT_DIFF_LINES</code></td>
+<td>差异对比页面单个文件显示的最大行数</td>
+</tr>
+<tr>
+<td><code>MAX_GIT_DIFF_LINE_CHARACTERS</code></td>
+<td>差异对比页面单行显示的最大字符数</td>
+</tr>
+<tr>
+<td><code>MAX_GIT_DIFF_FILES</code></td>
+<td>差异对比页面文件显示的最多个数</td>
+</tr>
+<tr>
+<td><code>GC_ARGS</code></td>
+<td><code>git gc</code> 命令的参数，例如：<code>--aggressive --auto</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-git-code-git-timeout-code-"><a name="Git - 超时 (&lt;code&gt;git.timeout&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Git - 超时 (<code>git.timeout</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MIGRATE</code></td>
+<td>仓库迁移操作超时，默认为 <code>600</code> 秒</td>
+</tr>
+<tr>
+<td><code>MIRROR</code></td>
+<td>仓库镜像同步操作超时，默认为 <code>300</code> 秒</td>
+</tr>
+<tr>
+<td><code>CLONE</code></td>
+<td>仓库克隆操作超时，默认为 <code>300</code> 秒</td>
+</tr>
+<tr>
+<td><code>PULL</code></td>
+<td>仓库拉取操作超时，默认为 <code>300</code> 秒</td>
+</tr>
+<tr>
+<td><code>GC</code></td>
+<td>仓库垃圾回收操作超时，默认为 <code>60</code> 秒</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3-ui-code-ui-code-"><a name="UI (&lt;code&gt;ui&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>UI (<code>ui</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EXPLORE_PAGING_NUM</code></td>
+<td>探索页面每页显示仓库的数量</td>
+</tr>
+<tr>
+<td><code>ISSUE_PAGING_NUM</code></td>
+<td>每页显示工单（Issue）的数量（应用到所有以列表形式显示工单的页面）</td>
+</tr>
+<tr>
+<td><code>FEED_MAX_COMMIT_NUM</code></td>
+<td>一条最新活动中显示代码提交（Commit）的最大数量</td>
+</tr>
+<tr>
+<td><code>THEME_COLOR_META_TAG</code></td>
+<td>被用于 Android &gt;= 5.0 版本 “theme-color” 标记的值，无效的值将被忽略并使用默认值（<a href="https://developers.google.com/web/updates/2014/11/Support-for-theme-color-in-Chrome-39-for-Android">查看详情</a>）</td>
+</tr>
+<tr>
+<td><code>MAX_DISPLAY_FILE_SIZE</code></td>
+<td>显示到页面的最大文件体积（Byte）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="h4-ui-admin-code-ui-admin-code-"><a name="UI - Admin (&lt;code&gt;ui.admin&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>UI - Admin (<code>ui.admin</code>)</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>USER_PAGING_NUM</code></td>
+<td>用户管理页面每页显示记录条数</td>
+</tr>
+<tr>
+<td><code>REPO_PAGING_NUM</code></td>
+<td>仓库管理页面每页显示记录条数</td>
+</tr>
+<tr>
+<td><code>NOTICE_PAGING_NUM</code></td>
+<td>系统提示管理页面每页显示记录条数</td>
+</tr>
+<tr>
+<td><code>ORG_PAGING_NUM</code></td>
+<td>组织管理页面每页显示记录条数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="h3--code-other-code-"><a name="其他 (&lt;code&gt;other&lt;/code&gt;)" class="reference-link"></a><span class="header-link octicon octicon-link"></span>其他 (<code>other</code>)</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SHOW_FOOTER_BRANDING</code></td>
+<td>激活该选项以在页脚显示 Gogs 推广信息</td>
+</tr>
+<tr>
+<td><code>SHOW_FOOTER_VERSION</code></td>
+<td>激活该选项以在页脚显示 Gogs 版本信息</td>
+</tr>
+<tr>
+<td><code>SHOW_FOOTER_TEMPLATE_LOAD_TIME</code></td>
+<td>激活该选项以在页脚显示 Gogs 模板加载时间</td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+</body>
+</html>

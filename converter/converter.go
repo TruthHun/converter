@@ -21,8 +21,8 @@ import (
 type Converter struct {
 	BasePath       string
 	Config         Config
-	GeneratedCover string
 	Debug          bool
+	GeneratedCover string
 }
 
 //目录结构
@@ -241,9 +241,9 @@ func (this *Converter) generateTocNcx() (err error) {
 func (this *Converter) generateSummary() (err error) {
 	//目录
 	summary := `<!DOCTYPE html>
-				<html lang="zh-CN">
+				<html lang="` + this.Config.Language + `">
 				<head>
-				    <meta charset="UTF-8">
+				    <meta charset="` + this.Config.Charset + `">
 				    <title>目录</title>
 				    <style>
 				        body{margin: 0px;padding: 0px;}h1{text-align: center;padding: 0px;margin: 0px;}ul,li{list-style: none;}

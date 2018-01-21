@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">4.3 多国语言支持</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#本地化 Gogs 应用" level="1">本地化 Gogs 应用</a><ul><li><a class="toc-level-2" href="#贡献翻译" level="2">贡献翻译</a></li><li><a class="toc-level-2" href="#自定义本地化文件" level="2">自定义本地化文件</a><ul></ul></li></ul></li></ul></div><h1 id="h1--gogs-"><a name="本地化 Gogs 应用" class="reference-link"></a><span class="header-link octicon octicon-link"></span>本地化 Gogs 应用</h1><p>Gogs 项目从 <code>v0.5.0</code> 版本开始支持应用的本地化，而您只需要鼠标单击就可实现即时语言切换。</p>
+<p>在 <code>custom/conf/app/ini</code> 文件中启用它们（默认启用全部）：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-ini"><span class="pun">[</span><span class="pln">i18n</span><span class="pun">]</span></code></li><li class="L1"><code class="lang-ini"><span class="pln">LANGS </span><span class="pun">=</span><span class="pln"> en</span><span class="pun">-</span><span class="pln">US</span><span class="pun">,</span><span class="pln">zh</span><span class="pun">-</span><span class="pln">CN</span><span class="pun">,</span><span class="pln">zh</span><span class="pun">-</span><span class="pln">HK</span><span class="pun">,</span><span class="pln">de</span><span class="pun">-</span><span class="pln">DE</span><span class="pun">,</span><span class="pln">fr</span><span class="pun">-</span><span class="pln">FR</span><span class="pun">,</span><span class="pln">nl</span><span class="pun">-</span><span class="pln">NL</span><span class="pun">,</span><span class="pln">lv</span><span class="pun">-</span><span class="pln">LV</span><span class="pun">,</span><span class="pln">ru</span><span class="pun">-</span><span class="pln">RU</span><span class="pun">,</span><span class="pln">ja</span><span class="pun">-</span><span class="pln">JP</span><span class="pun">,</span><span class="pln">es</span><span class="pun">-</span><span class="pln">ES</span><span class="pun">,</span><span class="pln">pt</span><span class="pun">-</span><span class="pln">BR</span><span class="pun">,</span><span class="pln">pl</span><span class="pun">-</span><span class="pln">PL</span><span class="pun">,</span><span class="pln">bg</span><span class="pun">-</span><span class="pln">BG</span><span class="pun">,</span><span class="pln">it</span><span class="pun">-</span><span class="pln">IT</span></code></li><li class="L2"><code class="lang-ini"><span class="pln">NAMES </span><span class="pun">=</span><span class="pln"> </span><span class="typ">English</span><span class="pun">,简体中文,繁體中文,</span><span class="typ">Deutsch</span><span class="pun">,</span><span class="typ">Fran</span><span class="pun">ç</span><span class="pln">ais</span><span class="pun">,</span><span class="typ">Nederlands</span><span class="pun">,</span><span class="typ">Latvie</span><span class="pun">š</span><span class="pln">u</span><span class="pun">,Русский,日本語,</span><span class="typ">Espa</span><span class="pun">ñ</span><span class="pln">ol</span><span class="pun">,</span><span class="typ">Portugu</span><span class="pun">ê</span><span class="pln">s </span><span class="kwd">do</span><span class="pln"> </span><span class="typ">Brasil</span><span class="pun">,</span><span class="typ">Polski</span><span class="pun">,български,</span><span class="typ">Italiano</span></code></li></ol></pre>
+<h2 id="h2-u8D21u732Eu7FFBu8BD1"><a name="贡献翻译" class="reference-link"></a><span class="header-link octicon octicon-link"></span>贡献翻译</h2><p>到 <a href="https://crowdin.com/project/gogs">Crowdin</a> 注册一个用户然后填补未翻译的字段。</p>
+<p>有时候您会发现您无法将一个句子准确地从英文翻译到您的语言，没关系，这很正常！只需要使用您的语言将中心思想表达出来就可以，而不需要斤斤计较。</p>
+<p>如果您想要测试翻译好的本地化文件，但又不想涉及到 Git 历史的变动，您可以将本地化文件放至 <code>custom/conf/locale/&lt;file&gt;</code> 然后重启 Gogs。</p>
+<h2 id="h2-u81EAu5B9Au4E49u672Cu5730u5316u6587u4EF6"><a name="自定义本地化文件" class="reference-link"></a><span class="header-link octicon octicon-link"></span>自定义本地化文件</h2><p>如果您对官方的本地化翻译不够满意，可以修改其中的部分字段并保存到 <code>custom/conf/locale/locale_&lt;lang&gt;.ini</code> 中，然后重启 Gogs。</p>
+
+    </div>
+</body>
+</html>

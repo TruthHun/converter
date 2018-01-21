@@ -4448,3 +4448,14 @@ hr.editormd-page-break {
 .editormd-theme-dark .CodeMirror {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
+.editormd-preview-container, .editormd-html-preview{padding: 0px;}
+body{background-color: transparent !important;}
+.editormd-preview-container ol.linenums li, .editormd-html-preview ol.linenums li{ min-height: 20px;}
+.editormd-preview-container ol.linenums li code, .editormd-html-preview ol.linenums li code{line-height: 1.7;}
+.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{font-weight: normal !important;}
+.markdown-body{font-size: 1.2em !important;line-height: 1.7;}
+.editormd-preview-container ol.linenums li, .editormd-html-preview ol.linenums li{min-height: 20px;}
+.markdown-body table th{font-weight: normal;}
+li.L1, li.L3, li.L5, li.L7, li.L9{background-color: transparent;}
+.markdown-body img{margin: 8px 0px;}
+.editormd-preview-container, .editormd-html-preview{background-color: transparent;}

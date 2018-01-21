@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">3.1 二进制升级</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#从二进制升级" level="1">从二进制升级</a><ul></ul></li></ul></div><h1 id="h1-u4ECEu4E8Cu8FDBu5236u5347u7EA7"><a name="从二进制升级" class="reference-link"></a><span class="header-link octicon octicon-link"></span>从二进制升级</h1><p><strong>相关下载可以从 <a href="/docs/installation/install_from_binary">二进制安装</a> 页面查看。</strong></p>
+<p>首先，确认当前安装的位置：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="com"># 默认位置在 git 用户下的家目录</span></code></li><li class="L1"><code class="lang-bash"><span class="pln">$ sudo su </span><span class="pun">-</span><span class="pln"> git</span></code></li><li class="L2"><code class="lang-bash"><span class="pln">$ cd </span><span class="pun">~</span></code></li><li class="L3"><code class="lang-bash"><span class="pln">$ pwd</span></code></li><li class="L4"><code class="lang-bash"><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">git</span></code></li><li class="L5"><code class="lang-bash"><span class="pln">$ ls</span></code></li><li class="L6"><code class="lang-bash"><span class="pln">gogs gogs</span><span class="pun">-</span><span class="pln">repositories</span></code></li></ol></pre>
+<p>然后将当前目录移动到另一个临时的位置，但不是删除！</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="pln">$ mv gogs gogs_old</span></code></li></ol></pre>
+<p>下载并解压新的二进制：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="com"># 请根据系统和类型获取相应的二进制版本</span></code></li><li class="L1"><code class="lang-bash"><span class="pln">$ wget wget https</span><span class="pun">://</span><span class="pln">dl</span><span class="pun">.</span><span class="pln">gogs</span><span class="pun">.</span><span class="pln">io</span><span class="pun">/</span><span class="pln">$VERSION</span><span class="pun">/</span><span class="pln">$OS_$ARCH</span><span class="pun">.</span><span class="pln">tar</span><span class="pun">.</span><span class="pln">gz</span></code></li><li class="L2"><code class="lang-bash"><span class="pln">$ tar </span><span class="pun">-</span><span class="pln">zxvf $OS_$ARCH</span><span class="pun">.</span><span class="pln">tar</span><span class="pun">.</span><span class="pln">gz</span></code></li><li class="L3"><code class="lang-bash"><span class="pln">$ ls</span></code></li><li class="L4"><code class="lang-bash"><span class="pln">gogs gogs_old  gogs</span><span class="pun">-</span><span class="pln">repositories $OS_$ARCH</span><span class="pun">.</span><span class="pln">tar</span><span class="pun">.</span><span class="pln">gz</span></code></li></ol></pre>
+<p>复制 <code>custom</code>、<code>data</code> 和 <code>log</code> 目录到新解压的目录中：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="pln">$ cp </span><span class="pun">-</span><span class="pln">R gogs_old</span><span class="pun">/</span><span class="pln">custom gogs</span></code></li><li class="L1"><code class="lang-bash"><span class="pln">$ cp </span><span class="pun">-</span><span class="pln">R gogs_old</span><span class="pun">/</span><span class="pln">data gogs</span></code></li><li class="L2"><code class="lang-bash"><span class="pln">$ cp </span><span class="pun">-</span><span class="pln">R gogs_old</span><span class="pun">/</span><span class="pln">log gogs</span></code></li></ol></pre>
+<p>最后，运行并打开浏览器进行测试：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-bash"><span class="pln">$ cd gogs</span></code></li><li class="L1"><code class="lang-bash"><span class="pln">$ </span><span class="pun">./</span><span class="pln">gogs web</span></code></li></ol></pre>
+<p>给自己点一个赞！</p>
+
+    </div>
+</body>
+</html>

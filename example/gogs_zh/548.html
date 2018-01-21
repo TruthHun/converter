@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Gogs中文文档 - 书栈(BookStack.CN)</title>
+    <link href="editormd.css" rel="stylesheet">
+</head>
+<body>
+    <h1 id="article-title">2. 下载安装</h1>
+    <div class="article-body markdown-body editormd-preview-container"  id="page-content">
+        <div class="markdown-toc editormd-markdown-toc"><ul class="markdown-toc-list"><li><a class="toc-level-1" href="#下载安装" level="1">下载安装</a><ul><li><a class="toc-level-2" href="#环境要求" level="2">环境要求</a><ul><li><a class="toc-level-3" href="#安装数据库" level="3">安装数据库</a></li><li><a class="toc-level-3" href="#安装其它要求" level="3">安装其它要求</a><ul><li><a class="toc-level-4" href="#Mac OS X" level="4">Mac OS X</a></li><li><a class="toc-level-4" href="#Debian/Ubuntu" level="4">Debian/Ubuntu</a></li><li><a class="toc-level-4" href="#Windows" level="4">Windows</a></li></ul></li></ul></li><li><a class="toc-level-2" href="#安装 Gogs" level="2">安装 Gogs</a><ul></ul></li></ul></li></ul></div><h1 id="h1-u4E0Bu8F7Du5B89u88C5"><a name="下载安装" class="reference-link"></a><span class="header-link octicon octicon-link"></span>下载安装</h1><h2 id="h2-u73AFu5883u8981u6C42"><a name="环境要求" class="reference-link"></a><span class="header-link octicon octicon-link"></span>环境要求</h2><ul>
+<li>数据库（选择以下一项）：<ul>
+<li><a href="http://dev.mysql.com">MySQL</a>：版本 &gt;= 5.5.3</li><li><a href="http://www.postgresql.org/">PostgreSQL</a></li><li><a href="https://en.wikipedia.org/wiki/Microsoft_SQL_Server">MSSQL</a></li><li><a href="https://github.com/pingcap/tidb">TiDB</a>（实验性支持，使用 MySQL 协议连接）</li><li>或者 <strong>什么都不安装</strong> 直接使用 SQLite3</li></ul>
+</li><li><a href="http://git-scm.com/">git</a>（bash）：<ul>
+<li>服务端和客户端均需版本 &gt;= 1.7.1</li><li>Windows 系统建议使用最新版</li></ul>
+</li><li>SSH 服务器：<ul>
+<li><strong>如果您只使用 HTTP/HTTPS 的话请忽略此项</strong></li><li>如果您选择在 Windows 系统使用内置 SSH 服务器，请确保添加 <code>ssh-keygen</code> 到您的 <code>%PATH%</code> 环境变量中</li><li>推荐 Windows 系统使用 <a href="http://docs.oracle.com/cd/E24628_01/install.121/e22624/preinstall_req_cygwin_ssh.htm">Cygwin OpenSSH</a> 或 <a href="https://www.itefix.net/copssh">Copssh</a></li></ul>
+</li></ul>
+<h3 id="h3-u5B89u88C5u6570u636Eu5E93"><a name="安装数据库" class="reference-link"></a><span class="header-link octicon octicon-link"></span>安装数据库</h3><p>请根据您的选择进行安装：</p>
+<ul>
+<li><a href="http://dev.mysql.com/downloads/mysql/">MySQL</a>（引擎：INNODB）</li><li><a href="http://www.postgresql.org/download/">PostgreSQL</a></li></ul>
+<p><strong>注意事项</strong> 您可以使用 <code>etc/mysql.sql</code> 来自动创建名为 <code>gogs</code> 的数据库。如果您选择手动创建，请务必将编码设置为 <code>utf8mb4</code>。</p>
+<h3 id="h3-u5B89u88C5u5176u5B83u8981u6C42"><a name="安装其它要求" class="reference-link"></a><span class="header-link octicon octicon-link"></span>安装其它要求</h3><h4 id="h4-mac-os-x"><a name="Mac OS X" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Mac OS X</h4><p>假设您已经安装 <a href="http://brew.sh/">Homebrew</a>：</p>
+<pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-sh"><span class="pln">$ brew update</span></code></li><li class="L1"><code class="lang-sh"><span class="pln">$ brew install git</span></code></li></ol></pre>
+<h4 id="h4-debian-ubuntu"><a name="Debian/Ubuntu" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Debian/Ubuntu</h4><pre class="prettyprint linenums prettyprinted" style=""><ol class="linenums"><li class="L0"><code class="lang-sh"><span class="pln">$ sudo apt</span><span class="pun">-</span><span class="pln">get update</span></code></li><li class="L1"><code class="lang-sh"><span class="pln">$ sudo apt</span><span class="pun">-</span><span class="pln">get install git</span></code></li></ol></pre>
+<h4 id="h4-windows"><a name="Windows" class="reference-link"></a><span class="header-link octicon octicon-link"></span>Windows</h4><p><a href="http://git-scm.com/downloads">下载并安装 Git</a></p>
+<h2 id="h2--gogs"><a name="安装 Gogs" class="reference-link"></a><span class="header-link octicon octicon-link"></span>安装 Gogs</h2><ul>
+<li><a href="http://gogs.io/docs/installation/install_from_binary.html">二进制安装</a></li><li><a href="http://gogs.io/docs/installation/install_from_source.html">源码安装</a></li></ul>
+
+    </div>
+</body>
+</html>
