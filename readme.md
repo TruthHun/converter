@@ -1,6 +1,20 @@
+[TOC]
+
 通过calibre将html转成epub、mobi、pdf等文档
 
-## json配置文件说明
+## 安装calibre
+- 下载地址：https://calibre-ebook.com/download
+- 根据自己的系统安装对应的calibre（需要注意的是，calibre要安装3.x版本的，2.x版本的功能不是很强大。反正安装最新的准没错。）
+- 安装完calibre之后，将calibre加入到系统的path中，执行下面的命令之后显示3.x的版本即表示安装成功。
+```
+ebook-convert --version
+```
+## 使用示例
+
+
+## 配置文件
+
+### json配置示例
 ```json
 {
 	"charset": "utf-8",
@@ -141,5 +155,11 @@
 	}]
 }
 ```
+
+### json配置说明
 1.  如果封面cover配置项为图片，则程序自动生成titlepage.xhtml文件；如果封面cover为html或者xhtml，则不会生成titlepage.xhtml.在处理的时候，判断cover前后是否相同再决定文件的删减
 1.  文件名，统一用book.pdf、book.epub等标识
+
+## 使用案例
+
+## 精神上支持我
