@@ -184,7 +184,7 @@ func (this *Converter) generateMetaInfo() (err error) {
 	return
 }
 
-//形成mimetyppe
+//生成mimetyppe
 func (this *Converter) generateMimeType() (err error) {
 	return ioutil.WriteFile(this.BasePath+"/mimetype", []byte("application/epub+zip"), os.ModePerm)
 }
@@ -286,7 +286,7 @@ func (this *Converter) tocToXml(pid, idx int) (codes []string, next_idx int) {
 	return
 }
 
-//将toc转成toc.ncx文件
+//将toc转成summary目录
 func (this *Converter) tocToSummary(pid int) (summarys []string) {
 	summarys = append(summarys, "<ul>")
 	for _, toc := range this.Config.Toc {
