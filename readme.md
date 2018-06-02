@@ -17,6 +17,11 @@
 
 通过calibre，将markdown和html转成epub、mobi、pdf等格式文档。
 
+> 说明(于2018-06-02)：calibre将HTML转成mobi等格式时请注意配置好各项配置参数到合理值，同时注意自己的HTML的样式调整，特别是在mobi格式的时候，html的CSS样式，如`background:#dddddd`设置背景色，颜色不生效，需要用`background-color:#dddddd`才会生效。
+目前经过多次测试，生成文档效果不佳的问题，主要是配置参数如字体大小和CSS样式问题造成的。同时，为了方便在epub等阅读器上的阅读体验，可以将body标签的CSS背景色设置为透明。
+
+
+
 <a name="intro"></a>
 ## 缘由
 
