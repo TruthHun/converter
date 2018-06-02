@@ -125,10 +125,22 @@ func (this *Converter) Convert() (err error) {
 
 	//将当前文件夹下的所有文件压缩成zip包，然后直接改名成content.epub
 	f := this.BasePath + "/content.epub"
+
 	os.Remove(f) //如果原文件存在了，则删除;
 	if err = ziptil.Zip(f, this.BasePath); err == nil {
 		//创建导出文件夹
 		os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
+
+		//处理直接压缩后的content.epub文件，将其转成新的content-tmp.epub文件
+		//再用content-tmp.epub文件替换掉content.epub文件，这样content.epub文件转PDF的时候，就不会出现空白页的情况了
+		tmp := this.BasePath + "/content-tmp.epub"
+		if err = exec.Command(ebookConvert, f, tmp).Run(); err != nil {
+			return
+		} else {
+			os.Remove(f)
+			os.Rename(tmp, f)
+		}
+
 		if len(this.Config.Format) > 0 {
 			var errs []string
 			for _, v := range this.Config.Format {
@@ -136,9 +148,19 @@ func (this *Converter) Convert() (err error) {
 				fmt.Println("convert to " + v)
 				switch strings.ToLower(v) {
 				case "epub":
-					if err = this.convertToEpub(); err != nil {
+					//if err = this.convertToEpub(); err != nil {
+					//	errs = append(errs, err.Error())
+					//}
+
+					//注意：由于之前已经将其转成content.epub了，所以这里直接复制就好了，不需要再次转一遍
+					if b, err := ioutil.ReadFile(f); err == nil {
+						if err = ioutil.WriteFile(this.BasePath+"/"+output+"/book.epub", b, os.ModePerm); err != nil {
+							errs = append(errs, err.Error())
+						}
+					} else {
 						errs = append(errs, err.Error())
 					}
+
 				case "mobi":
 					if err = this.convertToMobi(); err != nil {
 						errs = append(errs, err.Error())
