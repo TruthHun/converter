@@ -271,7 +271,7 @@ func (this *Converter) generateSummary() (err error) {
 				    <meta charset="` + this.Config.Charset + `">
 				    <title>目录</title>
 				    <style>
-				        body{margin: 0px;padding: 0px;}h1{text-align: center;padding: 0px;margin: 0px;}ul,li{list-style: none;}
+				        body{margin: 0px;padding: 0px;}h1{text-align: center;padding: 0px;margin: 0px;}ul,li{list-style: none;}ul{padding-left:0px;}li>ul{padding-left: 2em;}
 				        a{text-decoration: none;color: #4183c4;text-decoration: none;font-size: 16px;line-height: 28px;}
 				    </style>
 				</head>
