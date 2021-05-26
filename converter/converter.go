@@ -4,6 +4,7 @@
 package converter
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -50,7 +51,7 @@ type Config struct {
 	Publisher    string   `json:"publisher"`     //出版单位
 	Contributor  string   `json:"contributor"`   //同Publisher
 	Title        string   `json:"title"`         //文档标题
-	Format       []string `json:"format"`        //导出格式，可选值：pdf、epub、mobi
+	Format       []string `json:"format"`        //导出格式，可选值：pdf、epub、mobi、docx
 	FontSize     string   `json:"font_size"`     //默认的pdf导出字体大小
 	PaperSize    string   `json:"paper_size"`    //页面大小
 	MarginLeft   string   `json:"margin_left"`   //PDF文档左边距，写数字即可，默认72pt
@@ -167,6 +168,10 @@ func (this *Converter) Convert() (err error) {
 					}
 				case "pdf":
 					if err = this.convertToPdf(); err != nil {
+						errs = append(errs, err.Error())
+					}
+				case "docx":
+					if err = this.convertToWord(); err != nil {
 						errs = append(errs, err.Error())
 					}
 				}
@@ -442,12 +447,12 @@ func (this *Converter) convertToEpub() (err error) {
 		this.BasePath + "/content.epub",
 		this.BasePath + "/" + output + "/book.epub",
 	}
-	cmd := exec.Command(ebookConvert, args...)
 
 	if this.Debug {
-		fmt.Println(cmd.Args)
+		fmt.Println(ebookConvert, args)
 	}
-	return cmd.Run()
+	_, err = execCommand(ebookConvert, args)
+	return
 }
 
 //转成mobi
@@ -456,12 +461,25 @@ func (this *Converter) convertToMobi() (err error) {
 		this.BasePath + "/content.epub",
 		this.BasePath + "/" + output + "/book.mobi",
 	}
-	cmd := exec.Command(ebookConvert, args...)
-	if this.Debug {
-		fmt.Println(cmd.Args)
-	}
 
-	return cmd.Run()
+	if this.Debug {
+		fmt.Println(ebookConvert, args)
+	}
+	_, err = execCommand(ebookConvert, args)
+	return
+}
+
+//转成word文档
+func (this *Converter) convertToWord() (err error) {
+	args := []string{
+		this.BasePath + "/content.epub",
+		this.BasePath + "/" + output + "/book.docx",
+	}
+	if this.Debug {
+		fmt.Println(ebookConvert, args)
+	}
+	_, err = execCommand(ebookConvert, args)
+	return
 }
 
 //转成pdf
@@ -507,9 +525,37 @@ func (this *Converter) convertToPdf() (err error) {
 		args = append(args, this.Config.More...)
 	}
 
-	cmd := exec.Command(ebookConvert, args...)
 	if this.Debug {
-		fmt.Println(cmd.Args)
+		fmt.Println(ebookConvert, args)
 	}
-	return cmd.Run()
+	_, err = execCommand(ebookConvert, args)
+	return
+}
+
+// ExecCommand 执行cmd命令操作
+func execCommand(name string, args []string, timeout ...time.Duration) (out string, err error) {
+	var (
+		stderr, stdout bytes.Buffer
+		expire         = 30 * time.Minute
+	)
+
+	if len(timeout) > 0 {
+		expire = timeout[0]
+	}
+
+	cmd := exec.Command(name, args...)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	time.AfterFunc(expire, func() {
+		if cmd.Process != nil && cmd.Process.Pid != 0 {
+			out = out + fmt.Sprintf("\nexecute timeout: %v seconds.", expire.Seconds())
+			cmd.Process.Kill()
+		}
+	})
+	err = cmd.Run()
+	if err != nil {
+		err = fmt.Errorf("%v\n%v", err.Error(), stderr.String())
+	}
+	out = stdout.String()
+	return
 }
