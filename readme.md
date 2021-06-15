@@ -282,7 +282,6 @@ ebook-convert content.epub output/book.pdf [options]
 但是得到他人的肯定和认可比什么都重要。
 如果当前项目帮到了你，请给项目一个star，以鼓励我在开源的路上能走的更好、更远。
 附自己业余时间搞的一些站点，支持我，可以点击访问一下：
-- HC-CMS  http://www.hc-cms.com
 - IT文库  http://wenku.it
 - 书栈(BookStack) http://www.bookstack.cn
 
