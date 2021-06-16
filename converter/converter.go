@@ -27,6 +27,7 @@ type Converter struct {
 	Config         Config
 	Debug          bool
 	GeneratedCover string
+	Callback       func(identifier, ebookPath string) // 每本电子书生成后的回调
 }
 
 //目录结构
@@ -128,59 +129,64 @@ func (this *Converter) Convert() (err error) {
 	f := this.BasePath + "/content.epub"
 
 	os.Remove(f) //如果原文件存在了，则删除;
-	if err = ziptil.Zip(f, this.BasePath); err == nil {
-		//创建导出文件夹
-		os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
+	if err = ziptil.Zip(f, this.BasePath); err != nil {
+		return
+	}
 
-		//处理直接压缩后的content.epub文件，将其转成新的content-tmp.epub文件
-		//再用content-tmp.epub文件替换掉content.epub文件，这样content.epub文件转PDF的时候，就不会出现空白页的情况了
-		tmp := this.BasePath + "/content-tmp.epub"
-		if err = exec.Command(ebookConvert, f, tmp).Run(); err != nil {
-			return
-		} else {
-			os.Remove(f)
-			os.Rename(tmp, f)
-		}
+	//创建导出文件夹
+	os.Mkdir(this.BasePath+"/"+output, os.ModePerm)
 
-		if len(this.Config.Format) > 0 {
-			var errs []string
-			for _, v := range this.Config.Format {
-				fmt.Println("")
-				fmt.Println("convert to " + v)
-				switch strings.ToLower(v) {
-				case "epub":
-					//if err = this.convertToEpub(); err != nil {
-					//	errs = append(errs, err.Error())
-					//}
+	//处理直接压缩后的content.epub文件，将其转成新的content-tmp.epub文件
+	//再用content-tmp.epub文件替换掉content.epub文件，这样content.epub文件转PDF的时候，就不会出现空白页的情况了
+	tmp := this.BasePath + "/content-tmp.epub"
+	if _, err = execCommand(ebookConvert, []string{f, tmp}); err != nil {
+		return
+	}
 
-					//注意：由于之前已经将其转成content.epub了，所以这里直接复制就好了，不需要再次转一遍
-					if b, err := ioutil.ReadFile(f); err == nil {
-						if err = ioutil.WriteFile(this.BasePath+"/"+output+"/book.epub", b, os.ModePerm); err != nil {
-							errs = append(errs, err.Error())
-						}
-					} else {
-						errs = append(errs, err.Error())
-					}
+	// 重命名文件
+	os.Remove(f)
+	os.Rename(tmp, f)
 
-				case "mobi":
-					if err = this.convertToMobi(); err != nil {
-						errs = append(errs, err.Error())
-					}
-				case "pdf":
-					if err = this.convertToPdf(); err != nil {
-						errs = append(errs, err.Error())
-					}
-				case "docx":
-					if err = this.convertToWord(); err != nil {
-						errs = append(errs, err.Error())
-					}
+	// 只生成PDF电子书
+	formatLen := len(this.Config.Format)
+	if formatLen == 0 {
+		err = this.convertToPdf()
+		return
+	}
+
+	var errs []string
+	for _, v := range this.Config.Format {
+		fmt.Println("\nconvert to " + v)
+		v = strings.ToLower(v)
+		switch strings.ToLower(v) {
+		case "epub", ".epub":
+			//注意：由于之前已经将其转成content.epub了，所以这里直接复制就好了，不需要再次转一遍
+			target := this.BasePath + "/" + output + "/book.epub"
+			if b, err := ioutil.ReadFile(f); err == nil {
+				if err = ioutil.WriteFile(target, b, os.ModePerm); err != nil {
+					errs = append(errs, err.Error())
 				}
+			} else {
+				errs = append(errs, err.Error())
 			}
-			err = errors.New(strings.Join(errs, "\n"))
-		} else {
-			err = this.convertToPdf()
+			if this.Callback != nil {
+				this.Callback(this.Config.Identifier, target)
+			}
+		case "mobi", ".mobi":
+			if err = this.convertToMobi(); err != nil {
+				errs = append(errs, err.Error())
+			}
+		case "pdf", ".pdf":
+			if err = this.convertToPdf(); err != nil {
+				errs = append(errs, err.Error())
+			}
+		case "docx", ".docx":
+			if err = this.convertToWord(); err != nil {
+				errs = append(errs, err.Error())
+			}
 		}
 	}
+	err = errors.New(strings.Join(errs, "\n"))
 	return
 }
 
@@ -457,36 +463,45 @@ func (this *Converter) convertToEpub() (err error) {
 
 //转成mobi
 func (this *Converter) convertToMobi() (err error) {
+	target := this.BasePath + "/" + output + "/book.mobi"
 	args := []string{
 		this.BasePath + "/content.epub",
-		this.BasePath + "/" + output + "/book.mobi",
+		target,
 	}
 
 	if this.Debug {
 		fmt.Println(ebookConvert, args)
 	}
 	_, err = execCommand(ebookConvert, args)
+	if this.Callback != nil { // 回调，告知
+		this.Callback(this.Config.Identifier, target)
+	}
 	return
 }
 
 //转成word文档
 func (this *Converter) convertToWord() (err error) {
+	target := this.BasePath + "/" + output + "/book.docx"
 	args := []string{
 		this.BasePath + "/content.epub",
-		this.BasePath + "/" + output + "/book.docx",
+		target,
 	}
 	if this.Debug {
 		fmt.Println(ebookConvert, args)
 	}
 	_, err = execCommand(ebookConvert, args)
+	if this.Callback != nil { // 回调，告知
+		this.Callback(this.Config.Identifier, target)
+	}
 	return
 }
 
 //转成pdf
 func (this *Converter) convertToPdf() (err error) {
+	target := this.BasePath + "/" + output + "/book.pdf"
 	args := []string{
 		this.BasePath + "/content.epub",
-		this.BasePath + "/" + output + "/book.pdf",
+		target,
 	}
 	//页面大小
 	if len(this.Config.PaperSize) > 0 {
@@ -529,6 +544,9 @@ func (this *Converter) convertToPdf() (err error) {
 		fmt.Println(ebookConvert, args)
 	}
 	_, err = execCommand(ebookConvert, args)
+	if this.Callback != nil {
+		this.Callback(this.Config.Identifier, target)
+	}
 	return
 }
 
