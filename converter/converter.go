@@ -27,7 +27,7 @@ type Converter struct {
 	Config         Config
 	Debug          bool
 	GeneratedCover string
-	Callback       func(identifier, ebookPath string) // 每本电子书生成后的回调
+	Callback       func(identifier, ebookPath string, err error) // 每本电子书生成后的回调
 }
 
 //目录结构
@@ -162,7 +162,8 @@ func (this *Converter) Convert() (err error) {
 		case "epub", ".epub":
 			//注意：由于之前已经将其转成content.epub了，所以这里直接复制就好了，不需要再次转一遍
 			target := this.BasePath + "/" + output + "/book.epub"
-			if b, err := ioutil.ReadFile(f); err == nil {
+			b, err := ioutil.ReadFile(f)
+			if err == nil {
 				if err = ioutil.WriteFile(target, b, os.ModePerm); err != nil {
 					errs = append(errs, err.Error())
 				}
@@ -170,7 +171,7 @@ func (this *Converter) Convert() (err error) {
 				errs = append(errs, err.Error())
 			}
 			if this.Callback != nil {
-				this.Callback(this.Config.Identifier, target)
+				this.Callback(this.Config.Identifier, target, err)
 			}
 		case "mobi", ".mobi":
 			if err = this.convertToMobi(); err != nil {
@@ -474,7 +475,7 @@ func (this *Converter) convertToMobi() (err error) {
 	}
 	_, err = execCommand(ebookConvert, args)
 	if this.Callback != nil { // 回调，告知
-		this.Callback(this.Config.Identifier, target)
+		this.Callback(this.Config.Identifier, target, err)
 	}
 	return
 }
@@ -491,7 +492,7 @@ func (this *Converter) convertToWord() (err error) {
 	}
 	_, err = execCommand(ebookConvert, args)
 	if this.Callback != nil { // 回调，告知
-		this.Callback(this.Config.Identifier, target)
+		this.Callback(this.Config.Identifier, target, err)
 	}
 	return
 }
@@ -545,7 +546,7 @@ func (this *Converter) convertToPdf() (err error) {
 	}
 	_, err = execCommand(ebookConvert, args)
 	if this.Callback != nil {
-		this.Callback(this.Config.Identifier, target)
+		this.Callback(this.Config.Identifier, target, err)
 	}
 	return
 }
@@ -554,7 +555,7 @@ func (this *Converter) convertToPdf() (err error) {
 func execCommand(name string, args []string, timeout ...time.Duration) (out string, err error) {
 	var (
 		stderr, stdout bytes.Buffer
-		expire         = 30 * time.Minute
+		expire         = 60 * time.Minute
 	)
 
 	if len(timeout) > 0 {
