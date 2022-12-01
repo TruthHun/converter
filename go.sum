@@ -1,7 +1,7 @@
 github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/OwnLocal/goes v1.0.0/go.mod h1:8rIFjBGTue3lCU0wplczcUgt9Gxgrkkrw7etMIcn8TM=
-github.com/TruthHun/gotil v0.0.0-20221201021323-7d2f6cd7c36c h1:fTgZGkYoqAi2XeZVEGjHnFXh2zZ60Y6LIAH30Q7+u/U=
-github.com/TruthHun/gotil v0.0.0-20221201021323-7d2f6cd7c36c/go.mod h1:i5tqOvH+rsm0voXHnKkzayNkWnv8L/F7wVv+mBdrAL0=
+github.com/TruthHun/gotil v0.0.0-20221201022546-19fe8ec6ef40 h1:wLKVlwymHUF3EoYxIzqR/bpvE/wXAcuX0jZCDUlf6N8=
+github.com/TruthHun/gotil v0.0.0-20221201022546-19fe8ec6ef40/go.mod h1:i5tqOvH+rsm0voXHnKkzayNkWnv8L/F7wVv+mBdrAL0=
 github.com/astaxie/beego v1.12.0/go.mod h1:fysx+LZNZKnvh4GED/xND7jWtjCR6HzydR2Hh2Im57o=
 github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 h1:OYA+5W64v3OgClL+IrOD63t4i/RW7RqrAVl9LTZ9UqQ=
 github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394/go.mod h1:Q8n74mJTIgjX4RBBcHnJ05h//6/k6foqmgE45jTQtxg=
