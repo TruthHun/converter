@@ -1,6 +1,6 @@
-//Author:TruthHun
-//Email:TruthHun@QQ.COM
-//Date:2018-01-21
+// Author:TruthHun
+// Email:TruthHun@QQ.COM
+// Date:2018-01-21
 package converter
 
 import (
@@ -30,7 +30,7 @@ type Converter struct {
 	Callback       func(identifier, ebookPath string, err error) // 每本电子书生成后的回调
 }
 
-//目录结构
+// 目录结构
 type Toc struct {
 	Id    int    `json:"id"`
 	Link  string `json:"link"`
@@ -38,7 +38,7 @@ type Toc struct {
 	Title string `json:"title"`
 }
 
-//config.json文件解析结构
+// config.json文件解析结构
 type Config struct {
 	Charset      string   `json:"charset"`       //字符编码，默认utf-8编码
 	Cover        string   `json:"cover"`         //封面图片，或者封面html文件
@@ -70,7 +70,7 @@ var (
 	ebookConvert = "ebook-convert"
 )
 
-//根据json配置文件，创建文档转化对象
+// 根据json配置文件，创建文档转化对象
 func NewConverter(configFile string, debug ...bool) (converter *Converter, err error) {
 	var (
 		cfg      Config
@@ -100,7 +100,7 @@ func NewConverter(configFile string, debug ...bool) (converter *Converter, err e
 	return
 }
 
-//执行文档转换
+// 执行文档转换
 func (this *Converter) Convert() (err error) {
 	if !this.Debug { //调试模式下不删除生成的文件
 		defer this.converterDefer() //最后移除创建的多余而文件
@@ -139,13 +139,11 @@ func (this *Converter) Convert() (err error) {
 	//处理直接压缩后的content.epub文件，将其转成新的content-tmp.epub文件
 	//再用content-tmp.epub文件替换掉content.epub文件，这样content.epub文件转PDF的时候，就不会出现空白页的情况了
 	tmp := this.BasePath + "/content-tmp.epub"
-	if _, err = execCommand(ebookConvert, []string{f, tmp}); err != nil {
-		return
+	if _, err = execCommand(ebookConvert, []string{f, tmp}); err == nil {
+		// 重命名文件
+		os.Remove(f)
+		os.Rename(tmp, f)
 	}
-
-	// 重命名文件
-	os.Remove(f)
-	os.Rename(tmp, f)
 
 	// 只生成PDF电子书
 	formatLen := len(this.Config.Format)
@@ -191,7 +189,7 @@ func (this *Converter) Convert() (err error) {
 	return
 }
 
-//删除生成导出文档而创建的文件
+// 删除生成导出文档而创建的文件
 func (this *Converter) converterDefer() {
 	//删除不必要的文件
 	os.RemoveAll(this.BasePath + "/META-INF")
@@ -203,7 +201,7 @@ func (this *Converter) converterDefer() {
 	os.RemoveAll(this.BasePath + "/summary.html")    //文档目录
 }
 
-//生成metainfo
+// 生成metainfo
 func (this *Converter) generateMetaInfo() (err error) {
 	xml := `<?xml version="1.0"?>
 			<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
@@ -218,12 +216,12 @@ func (this *Converter) generateMetaInfo() (err error) {
 	return
 }
 
-//生成mimetyppe
+// 生成mimetyppe
 func (this *Converter) generateMimeType() (err error) {
 	return ioutil.WriteFile(this.BasePath+"/mimetype", []byte("application/epub+zip"), os.ModePerm)
 }
 
-//生成封面
+// 生成封面
 func (this *Converter) generateTitlePage() (err error) {
 	if ext := strings.ToLower(filepath.Ext(this.Config.Cover)); !(ext == ".html" || ext == ".xhtml") {
 		xml := `<?xml version='1.0' encoding='` + this.Config.Charset + `'?>
@@ -253,7 +251,7 @@ func (this *Converter) generateTitlePage() (err error) {
 	return
 }
 
-//生成文档目录
+// 生成文档目录
 func (this *Converter) generateTocNcx() (err error) {
 	ncx := `<?xml version='1.0' encoding='` + this.Config.Charset + `'?>
 			<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="%v">
@@ -274,7 +272,7 @@ func (this *Converter) generateTocNcx() (err error) {
 	return ioutil.WriteFile(this.BasePath+"/toc.ncx", []byte(ncx), os.ModePerm)
 }
 
-//生成文档目录，即summary.html
+// 生成文档目录，即summary.html
 func (this *Converter) generateSummary() (err error) {
 	//目录
 	summary := `<!DOCTYPE html>
@@ -296,7 +294,7 @@ func (this *Converter) generateSummary() (err error) {
 	return ioutil.WriteFile(this.BasePath+"/summary.html", []byte(summary), os.ModePerm)
 }
 
-//将toc转成toc.ncx文件
+// 将toc转成toc.ncx文件
 func (this *Converter) tocToXml(pid, idx int) (codes []string, next_idx int) {
 	var code string
 	for _, toc := range this.Config.Toc {
@@ -320,7 +318,7 @@ func (this *Converter) tocToXml(pid, idx int) (codes []string, next_idx int) {
 	return
 }
 
-//将toc转成summary目录
+// 将toc转成summary目录
 func (this *Converter) tocToSummary(pid int) (summarys []string) {
 	summarys = append(summarys, "<ul>")
 	for _, toc := range this.Config.Toc {
@@ -342,7 +340,7 @@ func (this *Converter) tocToSummary(pid int) (summarys []string) {
 	return
 }
 
-//生成navPoint
+// 生成navPoint
 func (this *Converter) getNavPoint(toc Toc, idx int) (navpoint string, nextidx int) {
 	navpoint = `
 	<navPoint id="id%v" playOrder="%v">
@@ -356,8 +354,8 @@ func (this *Converter) getNavPoint(toc Toc, idx int) (navpoint string, nextidx i
 	return
 }
 
-//生成content.opf文件
-//倒数第二步调用
+// 生成content.opf文件
+// 倒数第二步调用
 func (this *Converter) generateContentOpf() (err error) {
 	var (
 		guide       string
@@ -448,7 +446,7 @@ func (this *Converter) generateContentOpf() (err error) {
 	return ioutil.WriteFile(this.BasePath+"/content.opf", []byte(pkg), os.ModePerm)
 }
 
-//转成epub
+// 转成epub
 func (this *Converter) convertToEpub() (err error) {
 	args := []string{
 		this.BasePath + "/content.epub",
@@ -462,7 +460,7 @@ func (this *Converter) convertToEpub() (err error) {
 	return
 }
 
-//转成mobi
+// 转成mobi
 func (this *Converter) convertToMobi() (err error) {
 	target := this.BasePath + "/" + output + "/book.mobi"
 	args := []string{
@@ -480,7 +478,7 @@ func (this *Converter) convertToMobi() (err error) {
 	return
 }
 
-//转成word文档
+// 转成word文档
 func (this *Converter) convertToWord() (err error) {
 	target := this.BasePath + "/" + output + "/book.docx"
 	args := []string{
@@ -497,7 +495,7 @@ func (this *Converter) convertToWord() (err error) {
 	return
 }
 
-//转成pdf
+// 转成pdf
 func (this *Converter) convertToPdf() (err error) {
 	target := this.BasePath + "/" + output + "/book.pdf"
 	args := []string{
